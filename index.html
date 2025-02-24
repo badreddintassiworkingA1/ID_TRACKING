@@ -3,15 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Tracking</title>
+    <title>Decryption Analysis</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
-        input, button { margin: 10px; padding: 8px; }
-        #result { margin-top: 20px; font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        input {
+            margin: 10px;
+            padding: 10px;
+            width: 60%;
+            max-width: 400px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            background: white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
-    <h2>ID Tracking</h2>
+    <h2>Decryption Analysis & ID Matching</h2>
     <input type="text" id="encryptedText" placeholder="Enter encrypted text">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
@@ -41,10 +77,10 @@
             
             // List of possible IDs with corresponding names
             let idMapping = {
-                "18e": "Badreddine Tassi",
-                "10y": "abderrahman jabili",
-                "187": "Zakariae Ben Zouynah",
-                "17a": "badreddine mzouri"
+                "18e": "John Doe",
+                "10y": "Alice Smith",
+                "xyz": "Bob Johnson",
+                "abc": "Emma Brown"
             };
             
             let matchingResults = [];
@@ -62,5 +98,4 @@
         }
     </script>
 </body>
-    
 </html>
