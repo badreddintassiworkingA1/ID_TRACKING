@@ -48,7 +48,7 @@
 </head>
 <body>
     <h2>Decryption Analysis & ID Matching</h2>
-    <input type="text" id="encryptedText" placeholder="Enter New Sub1">
+    <input type="text" id="encryptedText" placeholder="Enter encrypted text">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
 
@@ -63,13 +63,13 @@
             console.log("Decrypted text: ", encryptedText);
 
             if (!encryptedText.includes("|")) {
-                resultDiv.innerHTML = "⚠️ Please enter a valid New Sub1";
+                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
                 return;
             }
 
             let parts = encryptedText.split("|");
             if (parts.length < 2) {
-                resultDiv.innerHTML = "⚠️ Incomplete New Sub1";
+                resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
                 return;
             }
 
@@ -82,14 +82,15 @@
                 "187": "Zakariae Ben Zouynah",
                 "17a": "Badreddine Mzouri",
                 "19h": "Oumaima El Alami",
-                "1bw": "Rayane Bensalah",
-                "18d": "Hamza Douch",
+                "1et": "Rayane Bensalah",
+                "1ai": "Rayane Bensalah 2",
+                "1gg": "Hamza Douch",
+                "18d": "Hamza Douch 2",
                 "17j": "Farouk Sedqi",
                 "0zw": "Shaimae Zerouali",
-                "0yq": "Asmae Cherkaoui",
                 "1d2": "Lamiaee Mai",
                 "1bl": "Naoufal",
-                "1by": "Adil Agbalu",
+                "0yq": "Asmae Cherkaoui",
                 "0yn": "Zahra Mghait",
                 "1f0": "Khadija El Heddari",
                 "0vo": "Somaia Ghoddani",
@@ -101,8 +102,12 @@
             let matchingResults = [];
             
             Object.keys(idMapping).forEach(id => {
-                let isMatch = id.split('').every(char => encryptedPart.includes(char));
-                if (isMatch) matchingResults.push(`${id} (${idMapping[id]})`);
+                let normalMatch = encryptedPart.includes(id);
+                let reversedMatch = encryptedPart.includes(id.split('').reverse().join(''));
+                
+                if (normalMatch || reversedMatch) {
+                    matchingResults.push(`${id} (${idMapping[id]})`);
+                }
             });
             
             if (matchingResults.length > 0) {
