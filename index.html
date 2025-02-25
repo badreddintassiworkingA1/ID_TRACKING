@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h2>Decryption Analysis & ID Matching</h2>
+    <h2>Decryption Analysis & ID Matching.</h2>
     <input type="text" id="encryptedText" placeholder="Enter encrypted text">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
@@ -58,7 +58,6 @@
             let resultDiv = document.getElementById("result");
             resultDiv.innerHTML = "";
 
-            // Decode encoded values (%7C = |) twice to ensure full decoding
             encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
             console.log("Decrypted text: ", encryptedText);
 
@@ -73,9 +72,8 @@
                 return;
             }
 
-            let encryptedPart = parts[1].trim(); // The part containing the arranged letters
+            let encryptedPart = parts[1].trim(); 
             
-            // List of possible IDs with corresponding names
             let idMapping = {
                 "18e": "Badreddine Tassi",
                 "10y": "Abderrahman Jabili",
@@ -95,15 +93,25 @@
                 "1f0": "Khadija El Heddari",
                 "0vo": "Somaia Ghoddani",
                 "0xh": "Abderrahime Lemmtouni Chouiakh",
-                "0re": "Youssef Temsamani-Nya",
                 "1d4": "Nihad Akrimel"
             };
             
             let matchingResults = [];
             
+            function isSubsequence(id, text) {
+                let index = 0;
+                for (let char of text) {
+                    if (char === id[index]) {
+                        index++;
+                    }
+                    if (index === id.length) return true;
+                }
+                return false;
+            }
+            
             Object.keys(idMapping).forEach(id => {
-                let normalMatch = encryptedPart.includes(id);
-                let reversedMatch = encryptedPart.includes(id.split('').reverse().join(''));
+                let normalMatch = isSubsequence(id, encryptedPart);
+                let reversedMatch = isSubsequence(id.split('').reverse().join(''), encryptedPart);
                 
                 if (normalMatch || reversedMatch) {
                     matchingResults.push(`${id} (${idMapping[id]})`);
