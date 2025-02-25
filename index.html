@@ -48,7 +48,7 @@
 </head>
 <body>
     <h2>Decryption Analysis & ID Matching</h2>
-    <input type="text" id="encryptedText" placeholder="Enter encrypted text">
+    <input type="text" id="encryptedText" placeholder="Enter New Sub1">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
 
@@ -63,13 +63,13 @@
             console.log("Decrypted text: ", encryptedText);
 
             if (!encryptedText.includes("|")) {
-                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+                resultDiv.innerHTML = "⚠️ Please enter a valid New Sub1";
                 return;
             }
 
             let parts = encryptedText.split("|");
             if (parts.length < 2) {
-                resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
+                resultDiv.innerHTML = "⚠️ Incomplete New Sub1";
                 return;
             }
 
