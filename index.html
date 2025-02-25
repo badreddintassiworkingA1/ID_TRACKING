@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h2>Decryption Analysis & ID Matching.</h2>
+    <h2>Decryption Analysis</h2>
     <input type="text" id="encryptedText" placeholder="Enter encrypted text">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
@@ -74,56 +74,12 @@
 
             let encryptedPart = parts[1].trim(); 
             
-            let idMapping = {
-                "18e": "Badreddine Tassi",
-                "10y": "Abderrahman Jabili",
-                "187": "Zakariae Ben Zouynah",
-                "17a": "Badreddine Mzouri",
-                "19h": "Oumaima El Alami",
-                "1et": "Rayane Bensalah",
-                "1ai": "Rayane Bensalah 2",
-                "1gg": "Hamza Douch",
-                "18d": "Hamza Douch 2",
-                "17j": "Farouk Sedqi",
-                "0zw": "Shaimae Zerouali",
-                "1d2": "Lamiaee Mai",
-                "1bl": "Naoufal",
-                "0yq": "Asmae Cherkaoui",
-                "0yn": "Zahra Mghait",
-                "1f0": "Khadija El Heddari",
-                "0vo": "Somaia Ghoddani",
-                "0xh": "Abderrahime Lemmtouni Chouiakh",
-                "1d4": "Nihad Akrimel"
-            };
+            let idList = ["18e", "10y", "187", "17a", "19h", "1et", "1ai", "1gg", "18d", "17j", "0zw", "1d2", "1bl", "0yq", "0yn", "1f0", "0vo", "0xh", "1d4"];
             
-            let bestMatch = null;
-            let bestMatchLength = 0;
+            let matchedIds = idList.filter(id => id.split('').every(char => encryptedPart.includes(char)));
             
-            function isOrderedSubsequence(id, text) {
-                let index = 0;
-                for (let char of text) {
-                    if (char === id[index]) {
-                        index++;
-                    }
-                    if (index === id.length) return true;
-                }
-                return false;
-            }
-            
-            Object.keys(idMapping).forEach(id => {
-                let normalMatch = isOrderedSubsequence(id, encryptedPart);
-                let reversedMatch = isOrderedSubsequence(id.split('').reverse().join(''), encryptedPart);
-                
-                if (normalMatch || reversedMatch) {
-                    if (id.length > bestMatchLength) {
-                        bestMatch = id;
-                        bestMatchLength = id.length;
-                    }
-                }
-            });
-            
-            if (bestMatch) {
-                resultDiv.innerHTML = `✅ Best ID match: ${bestMatch} (${idMapping[bestMatch]})`;
+            if (matchedIds.length > 0) {
+                resultDiv.innerHTML = `✅ Possible ID matches: ${matchedIds.join(", ")}`;
             } else {
                 resultDiv.innerHTML = "❌ No matching ID found";
             }
