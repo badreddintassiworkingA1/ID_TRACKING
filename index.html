@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h2>Decryption Analysis & ID Matching</h2>
+    <h2>Decryption Analysis & ID Matching.</h2>
     <input type="text" id="encryptedText" placeholder="Enter encrypted text">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
@@ -96,15 +96,14 @@
                 "1d4": "Nihad Akrimel"
             };
             
-            let matchingResults = [];
+            let bestMatch = null;
+            let bestMatchLength = 0;
             
-            function isStrictSubsequence(id, text) {
+            function isOrderedSubsequence(id, text) {
                 let index = 0;
                 for (let char of text) {
                     if (char === id[index]) {
                         index++;
-                    } else if (index > 0) {
-                        return false; // إذا توقفت الحروف عن التطابق، يتم الإقصاء فورًا
                     }
                     if (index === id.length) return true;
                 }
@@ -112,16 +111,19 @@
             }
             
             Object.keys(idMapping).forEach(id => {
-                let normalMatch = isStrictSubsequence(id, encryptedPart);
-                let reversedMatch = isStrictSubsequence(id.split('').reverse().join(''), encryptedPart);
+                let normalMatch = isOrderedSubsequence(id, encryptedPart);
+                let reversedMatch = isOrderedSubsequence(id.split('').reverse().join(''), encryptedPart);
                 
                 if (normalMatch || reversedMatch) {
-                    matchingResults.push(`${id} (${idMapping[id]})`);
+                    if (id.length > bestMatchLength) {
+                        bestMatch = id;
+                        bestMatchLength = id.length;
+                    }
                 }
             });
             
-            if (matchingResults.length > 0) {
-                resultDiv.innerHTML = "✅ Possible ID match: " + matchingResults.join(", ");
+            if (bestMatch) {
+                resultDiv.innerHTML = `✅ Best ID match: ${bestMatch} (${idMapping[bestMatch]})`;
             } else {
                 resultDiv.innerHTML = "❌ No matching ID found";
             }
