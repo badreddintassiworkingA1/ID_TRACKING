@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h2>Decryption Analysis.</h2>
+    <h2>Decryption Analysis</h2>
     <input type="text" id="encryptedText" placeholder="Enter encrypted text">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
@@ -108,7 +108,9 @@
                 "1d4": "Nihad Akrimel"
             };
             
-            let matchedId = Object.keys(idList).find(id => remainingChars.includes(id));
+            let matchedId = Object.keys(idList).find(id => 
+                remainingChars.includes(id) || remainingChars.split("").reverse().join("").includes(id)
+            );
             
             if (matchedId) {
                 resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
