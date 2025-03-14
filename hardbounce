@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إزالة الإيميلات غير النشطة</title>
+    <style>
+        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        button { padding: 10px; cursor: pointer; margin-top: 10px; }
+        .output { background: #f4f4f4; padding: 10px; margin-top: 10px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h2>إزالة الإيميلات غير النشطة</h2>
+    <label>أدخل القوائم (كل قائمة تبدأ باسمها متبوعة بنقطتين ":")</label>
+    <textarea id="emailLists" placeholder="List 1:\na@yahoo.com\nb@yahoo.com\nc@yahoo.com\nd@yahoo.com\n\nList 2:\n1@yahoo.com\n2@yahoo.com\n3@yahoo.com\n4@yahoo.com"></textarea>
+    
+    <label>أدخل الإيميلات غير النشطة (كل إيميل في سطر جديد)</label>
+    <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
+    
+    <button onclick="processEmails()">إزالة الإيميلات غير النشطة</button>
+    <div class="output" id="result"></div>
+
+    <script>
+        function processEmails() {
+            let emailListsText = document.getElementById("emailLists").value;
+            let inactiveEmailsText = document.getElementById("inactiveEmails").value;
+            
+            let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()).filter(e => e));
+            let resultText = "";
+            let lines = emailListsText.split('\n');
+            
+            let currentList = "";
+            let listData = {};
+            
+            lines.forEach(line => {
+                if (line.endsWith(":")) {
+                    currentList = line;
+                    listData[currentList] = [];
+                } else if (line.trim() !== "" && currentList) {
+                    if (!inactiveEmails.has(line.trim())) {
+                        listData[currentList].push(line.trim());
+                    }
+                }
+            });
+            
+            for (let list in listData) {
+                resultText += list + "\n" + listData[list].join("\n") + "\n\n";
+            }
+            
+            document.getElementById("result").innerText = resultText;
+        }
+    </script>
+</body>
+</html>
