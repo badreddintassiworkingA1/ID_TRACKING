@@ -1,34 +1,49 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إزالة الإيميلات غير النشطة</title>
+    <title>Remove Inactive Emails</title>
     <style>
-        body { font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; }
-        textarea { width: 100%; height: 120px; margin-bottom: 10px; }
-        button { padding: 10px; cursor: pointer; margin-top: 10px; display: block; }
-        .output { background: #f4f4f4; padding: 10px; margin-top: 10px; white-space: pre-wrap; border: 1px solid #ddd; }
+        body { font-family: Arial, sans-serif; direction: ltr; text-align: left; padding: 20px; background-color: #f9f9f9; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        textarea { width: 100%; height: 150px; margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        .output { background: #eef; padding: 10px; margin-top: 15px; white-space: pre-wrap; border: 1px solid #ccc; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <h2>إزالة الإيميلات غير النشطة</h2>
-    <label>أدخل القوائم (كل قائمة تبدأ باسمها متبوعة بنقطتين ":")</label>
-    <textarea id="emailLists" placeholder="List 1:\na@yahoo.com\nb@yahoo.com\nc@yahoo.com\nd@yahoo.com\n\nList 2:\n1@yahoo.com\n2@yahoo.com\n3@yahoo.com\n4@yahoo.com"></textarea>
-    
-    <label>أدخل الإيميلات غير النشطة (كل إيميل في سطر جديد)</label>
-    <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
-    
-    <button onclick="processEmails()">إزالة الإيميلات غير النشطة</button>
-    <div class="output" id="result"></div>
+    <div class="container">
+        <h2>Remove Inactive Emails</h2>
+        <label>Enter Email Lists (each list starts with a name followed by a colon ":")</label>
+        <textarea id="emailLists" placeholder="List 1:
+a@yahoo.com
+b@yahoo.com
+c@yahoo.com
+d@yahoo.com
 
+List 2:
+1@yahoo.com
+2@yahoo.com
+3@yahoo.com
+4@yahoo.com"></textarea>
+        
+        <label>Enter Inactive Emails (one email per line)</label>
+        <textarea id="inactiveEmails" placeholder="b@yahoo.com
+3@yahoo.com"></textarea>
+        
+        <button onclick="processEmails()">Remove Inactive Emails</button>
+        <div class="output" id="result"></div>
+    </div>
+    
     <script>
         function processEmails() {
             let emailListsText = document.getElementById("emailLists").value.trim();
             let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
             
             if (!emailListsText || !inactiveEmailsText) {
-                alert("يرجى إدخال القوائم والإيميلات غير النشطة");
+                alert("Please enter both email lists and inactive emails.");
                 return;
             }
             
@@ -57,7 +72,7 @@
                 resultText += list + "\n" + listData[list].join("\n") + "\n\n";
             }
             
-            document.getElementById("result").innerText = resultText.trim() || "لم يتبقَّ أي إيميلات بعد الإزالة";
+            document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
         }
     </script>
 </body>
