@@ -6,9 +6,9 @@
     <title>إزالة الإيميلات غير النشطة</title>
     <style>
         body { font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
-        button { padding: 10px; cursor: pointer; margin-top: 10px; }
-        .output { background: #f4f4f4; padding: 10px; margin-top: 10px; white-space: pre-wrap; }
+        textarea { width: 100%; height: 120px; margin-bottom: 10px; }
+        button { padding: 10px; cursor: pointer; margin-top: 10px; display: block; }
+        .output { background: #f4f4f4; padding: 10px; margin-top: 10px; white-space: pre-wrap; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
@@ -24,10 +24,15 @@
 
     <script>
         function processEmails() {
-            let emailListsText = document.getElementById("emailLists").value;
-            let inactiveEmailsText = document.getElementById("inactiveEmails").value;
+            let emailListsText = document.getElementById("emailLists").value.trim();
+            let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
             
-            let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()).filter(e => e));
+            if (!emailListsText || !inactiveEmailsText) {
+                alert("يرجى إدخال القوائم والإيميلات غير النشطة");
+                return;
+            }
+            
+            let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
             let resultText = "";
             let lines = emailListsText.split('\n');
             
@@ -35,12 +40,15 @@
             let listData = {};
             
             lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                
                 if (line.endsWith(":")) {
                     currentList = line;
                     listData[currentList] = [];
-                } else if (line.trim() !== "" && currentList) {
-                    if (!inactiveEmails.has(line.trim())) {
-                        listData[currentList].push(line.trim());
+                } else if (currentList) {
+                    if (!inactiveEmails.has(line)) {
+                        listData[currentList].push(line);
                     }
                 }
             });
@@ -49,7 +57,7 @@
                 resultText += list + "\n" + listData[list].join("\n") + "\n\n";
             }
             
-            document.getElementById("result").innerText = resultText;
+            document.getElementById("result").innerText = resultText.trim() || "لم يتبقَّ أي إيميلات بعد الإزالة";
         }
     </script>
 </body>
