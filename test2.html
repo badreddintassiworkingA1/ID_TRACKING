@@ -29,7 +29,7 @@
         <h2>Hard Bounce Removal</h2>
         <label>Enter Email Lists (each list starts with a name followed by a colon ":")</label>
         <textarea id="emailLists" placeholder="List 1:
-a1@yahoo.com
+a@yahoo.com
 b@yahoo.com
 c@yahoo.com
 d@yahoo.com
@@ -47,6 +47,7 @@ List 2:
         <button onclick="processEmails()">Remove Inactive Emails</button>
         <div class="output" id="result"></div>
         <div class="output" id="removedEmails"></div>
+        <div class="output" id="notFoundEmails"></div>
     </div>
     
     <script>
@@ -62,12 +63,13 @@ List 2:
             let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
             let resultText = "";
             let removedEmailsText = "Removed Emails:\n";
+            let notFoundEmailsText = "Not Found Emails:\n";
             let lines = emailListsText.split('\n');
             
             let currentList = "";
             let listData = {};
             let removedEmails = {};
-            let foundInactiveEmails = false;
+            let foundInactiveEmails = new Set();
             
             lines.forEach(line => {
                 line = line.trim();
@@ -82,7 +84,7 @@ List 2:
                         listData[currentList].push(line);
                     } else {
                         removedEmails[currentList].push(line);
-                        foundInactiveEmails = true;
+                        foundInactiveEmails.add(line);
                     }
                 }
             });
@@ -97,8 +99,16 @@ List 2:
                 }
             }
             
+            let notFoundEmails = [...inactiveEmails].filter(email => !foundInactiveEmails.has(email));
+            if (notFoundEmails.length > 0) {
+                notFoundEmailsText += notFoundEmails.join("\n") + "\n";
+            } else {
+                notFoundEmailsText = "All inactive emails were found and removed.";
+            }
+            
             document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
-            document.getElementById("removedEmails").innerText = foundInactiveEmails ? removedEmailsText.trim() : "No inactive emails found in the lists.";
+            document.getElementById("removedEmails").innerText = removedEmailsText.trim();
+            document.getElementById("notFoundEmails").innerText = notFoundEmailsText.trim();
         }
     </script>
 </body>
