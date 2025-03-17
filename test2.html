@@ -27,22 +27,9 @@
     </div>
     <div class="container">
         <h2>Hard Bounce Removal</h2>
-        <label>Enter Email Lists (each list starts with a name followed by a colon ":")</label>
-        <textarea id="emailLists" placeholder="List 1:
-a@yahoo.com
-b@yahoo.com
-c@yahoo.com
-d@yahoo.com
-
-List 2:
-1@yahoo.com
-2@yahoo.com
-3@yahoo.com
-4@yahoo.com"></textarea>
         
         <label>Enter Inactive Emails (one email per line)</label>
-        <textarea id="inactiveEmails" placeholder="b@yahoo.com
-3@yahoo.com"></textarea>
+        <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
         
         <button onclick="processEmails()">Remove Inactive Emails</button>
         <div class="output" id="result"></div>
@@ -51,46 +38,55 @@ List 2:
     </div>
     
     <script>
+        let emailLists = {
+            "List 1": [
+"noyknti0ks@yahoo.com",
+"npegbmoexr@yahoo.com",
+"npkgbjpbenrue@yahoo.com",
+"npyrxuwdtbxodki@yahoo.com",
+"nqawdwperhmqsekmt@yahoo.com",
+"nqivwm8pd@yahoo.com",
+"nqoxustoc@yahoo.com",
+"nqygkpturlwfiqmj@yahoo.com",
+"nr1zwee85z0ilhrnk@yahoo.com",
+"nrfvcabsq@yahoo.com"
+            ],
+            "List 2": [
+                "1@yahoo.com",
+                "2@yahoo.com",
+                "3@yahoo.com",
+                "4@yahoo.com"
+            ]
+        };
+
         function processEmails() {
-            let emailListsText = document.getElementById("emailLists").value.trim();
             let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
-            
-            if (!emailListsText || !inactiveEmailsText) {
-                alert("Please enter both email lists and inactive emails.");
+            if (!inactiveEmailsText) {
+                alert("Please enter inactive emails.");
                 return;
             }
             
             let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
             let resultText = "";
             let removedEmailsText = "Removed Emails:\n";
-            let notFoundEmailsText = "❌Not Found List for this Emails:\n";
-            let lines = emailListsText.split('\n');
-            
-            let currentList = "";
-            let listData = {};
-            let removedEmails = {};
+            let notFoundEmailsText = "Not Found Emails:\n";
             let foundInactiveEmails = new Set();
+            let removedEmails = {};
             
-            lines.forEach(line => {
-                line = line.trim();
-                if (!line) return;
-                
-                if (line.endsWith(":")) {
-                    currentList = line;
-                    listData[currentList] = [];
-                    removedEmails[currentList] = [];
-                } else if (currentList) {
-                    if (!inactiveEmails.has(line)) {
-                        listData[currentList].push(line);
-                    } else {
-                        removedEmails[currentList].push(line);
-                        foundInactiveEmails.add(line);
+            for (let list in emailLists) {
+                removedEmails[list] = [];
+                emailLists[list] = emailLists[list].filter(email => {
+                    if (inactiveEmails.has(email)) {
+                        removedEmails[list].push(email);
+                        foundInactiveEmails.add(email);
+                        return false;
                     }
-                }
-            });
+                    return true;
+                });
+            }
             
-            for (let list in listData) {
-                resultText += list + "\n" + listData[list].join("\n") + "\n\n";
+            for (let list in emailLists) {
+                resultText += list + "\n" + emailLists[list].join("\n") + "\n\n";
             }
             
             for (let list in removedEmails) {
@@ -103,7 +99,7 @@ List 2:
             if (notFoundEmails.length > 0) {
                 notFoundEmailsText += notFoundEmails.join("\n") + "\n";
             } else {
-                notFoundEmailsText = "✅All inactive emails were found and removed.";
+                notFoundEmailsText = "All inactive emails were found and removed.";
             }
             
             document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
