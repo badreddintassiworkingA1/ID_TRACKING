@@ -32,7 +32,6 @@
         <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
         
         <button onclick="processEmails()">Remove Inactive Emails</button>
-        <div class="output" id="result"></div>
         <div class="output" id="removedEmails"></div>
         <div class="output" id="notFoundEmails"></div>
     </div>
@@ -40,16 +39,10 @@
     <script>
         let emailLists = {
             "List 1": [
-"noyknti0ks@yahoo.com",
-"npegbmoexr@yahoo.com",
-"npkgbjpbenrue@yahoo.com",
-"npyrxuwdtbxodki@yahoo.com",
-"nqawdwperhmqsekmt@yahoo.com",
-"nqivwm8pd@yahoo.com",
-"nqoxustoc@yahoo.com",
-"nqygkpturlwfiqmj@yahoo.com",
-"nr1zwee85z0ilhrnk@yahoo.com",
-"nrfvcabsq@yahoo.com"
+                "a@yahoo.com",
+                "b@yahoo.com",
+                "c@yahoo.com",
+                "d@yahoo.com"
             ],
             "List 2": [
                 "1@yahoo.com",
@@ -67,7 +60,6 @@
             }
             
             let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
-            let resultText = "";
             let removedEmailsText = "Removed Emails:\n";
             let notFoundEmailsText = "Not Found Emails:\n";
             let foundInactiveEmails = new Set();
@@ -85,10 +77,6 @@
                 });
             }
             
-            for (let list in emailLists) {
-                resultText += list + "\n" + emailLists[list].join("\n") + "\n\n";
-            }
-            
             for (let list in removedEmails) {
                 if (removedEmails[list].length > 0) {
                     removedEmailsText += list + "\n" + removedEmails[list].join("\n") + "\n\n";
@@ -102,7 +90,6 @@
                 notFoundEmailsText = "All inactive emails were found and removed.";
             }
             
-            document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
             document.getElementById("removedEmails").innerText = removedEmailsText.trim();
             document.getElementById("notFoundEmails").innerText = notFoundEmailsText.trim();
         }
