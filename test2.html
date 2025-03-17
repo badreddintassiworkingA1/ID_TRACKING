@@ -29,7 +29,7 @@
         <h2>Hard Bounce Removal</h2>
         <label>Enter Email Lists (each list starts with a name followed by a colon ":")</label>
         <textarea id="emailLists" placeholder="List 1:
-a@yahoo.com
+a1@yahoo.com
 b@yahoo.com
 c@yahoo.com
 d@yahoo.com
@@ -67,6 +67,7 @@ List 2:
             let currentList = "";
             let listData = {};
             let removedEmails = {};
+            let foundInactiveEmails = false;
             
             lines.forEach(line => {
                 line = line.trim();
@@ -81,6 +82,7 @@ List 2:
                         listData[currentList].push(line);
                     } else {
                         removedEmails[currentList].push(line);
+                        foundInactiveEmails = true;
                     }
                 }
             });
@@ -96,7 +98,7 @@ List 2:
             }
             
             document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
-            document.getElementById("removedEmails").innerText = removedEmailsText.trim();
+            document.getElementById("removedEmails").innerText = foundInactiveEmails ? removedEmailsText.trim() : "No inactive emails found in the lists.";
         }
     </script>
 </body>
