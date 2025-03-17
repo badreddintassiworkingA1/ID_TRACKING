@@ -63,7 +63,7 @@ List 2:
             let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
             let resultText = "";
             let removedEmailsText = "Removed Emails:\n";
-            let notFoundEmailsText = "Not Found Emails:\n";
+            let notFoundEmailsText = "❌Not Found List for this Emails:\n";
             let lines = emailListsText.split('\n');
             
             let currentList = "";
@@ -103,7 +103,7 @@ List 2:
             if (notFoundEmails.length > 0) {
                 notFoundEmailsText += notFoundEmails.join("\n") + "\n";
             } else {
-                notFoundEmailsText = "All inactive emails were found and removed.";
+                notFoundEmailsText = "✅All inactive emails were found and removed.";
             }
             
             document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
