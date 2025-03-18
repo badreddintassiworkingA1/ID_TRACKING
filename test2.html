@@ -92,7 +92,7 @@
             
             let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
             let removedEmailsText = "Removed Emails:\n";
-            let notFoundEmailsText = "Not Found Emails:\n";
+            let notFoundEmailsText = "❌Not Found Emails:\n";
             let foundInactiveEmails = new Set();
             let removedEmails = {};
             
@@ -118,7 +118,7 @@
             if (notFoundEmails.length > 0) {
                 notFoundEmailsText += notFoundEmails.join("\n") + "\n";
             } else {
-                notFoundEmailsText = "All inactive emails were found and removed.";
+                notFoundEmailsText = "✅All hard bounce emails were found.";
             }
             
             document.getElementById("removedEmails").innerText = removedEmailsText.trim();
