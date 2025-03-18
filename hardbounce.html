@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hard Bounce Remover</title>
+    <title>Hard Bounce Removal</title>
     <style>
         body { font-family: Arial, sans-serif; direction: ltr; text-align: left; padding: 20px; background-color: #f9f9f9; margin: 0; }
         .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 80px; }
@@ -20,71 +20,76 @@
 <body>
     <div class="navbar">
         <div class="links">
-            <a href="index.html"><strong>ID Tracking</strong></a>
-            <a href="hardbounce.html"><strong>Hard Bounce Remover</strong></a>
-            
+            <a href="hard-bounce-removal.html">Hard Bounce Removal</a>
+            <a href="id-tracking.html">ID Tracking</a>
         </div>
-        <a href="https://t.me/badreddine_tassi"><strong>Contact Us</strong></a>
+        <a href="contact.html">Contact Us</a>
     </div>
     <div class="container">
-        <h2>Hard Bounce Remover</h2>
-        <label>Enter Email Lists (each list starts with a name followed by a colon ":")</label>
-        <textarea id="emailLists" placeholder="List 1:
-aa@yahoo.com
-ab@yahoo.com
-ac@yahoo.com
-ad@yahoo.com
-
-List 2:
-a1@yahoo.com
-a2@yahoo.com
-a3@yahoo.com
-a4@yahoo.com"></textarea>
+        <h2>Hard Bounce Removal</h2>
         
-        <label>Enter Hard bounce Emails (one email per line)</label>
-        <textarea id="inactiveEmails" placeholder="ac@yahoo.com
-a3@yahoo.com"></textarea>
+        <label>Enter Inactive Emails (one email per line)</label>
+        <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
         
-        <button onclick="processEmails()">Remove Hard bounce Emails</button>
-        <div class="output" id="result"></div>
+        <button onclick="processEmails()">Remove Inactive Emails</button>
+        <div class="output" id="removedEmails"></div>
+        <div class="output" id="notFoundEmails"></div>
     </div>
     
     <script>
-        function processEmails() {
-            let emailListsText = document.getElementById("emailLists").value.trim();
-            let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
+        let emailLists = {};
+
+        async function loadEmailLists() {
+            const listFiles = ["Sys20seed01.json", "Sys20seed02.json", "Sys20seed03.json",  "Sys20seed04.json","list3.json"]; // Add all JSON list files here
+            for (let file of listFiles) {
+                let response = await fetch(file);
+                let data = await response.json();
+                Object.assign(emailLists, data);
+            }
+        }
+
+        async function processEmails() {
+            await loadEmailLists();
             
-            if (!emailListsText || !inactiveEmailsText) {
-                alert("Please enter both email lists and inactive emails.");
+            let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
+            if (!inactiveEmailsText) {
+                alert("Please enter inactive emails.");
                 return;
             }
             
             let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
-            let resultText = "";
-            let lines = emailListsText.split('\n');
+            let removedEmailsText = "Removed Emails:\n";
+            let notFoundEmailsText = "Not Found Emails:\n";
+            let foundInactiveEmails = new Set();
+            let removedEmails = {};
             
-            let currentList = "";
-            let listData = {};
-            
-            lines.forEach(line => {
-                line = line.trim();
-                if (!line) return;
-                
-                if (line.endsWith(":")) {
-                    currentList = line;
-                    listData[currentList] = [];
-                } else if (currentList) {
-                    if (!inactiveEmails.has(line)) {
-                        listData[currentList].push(line);
+            for (let list in emailLists) {
+                removedEmails[list] = [];
+                emailLists[list] = emailLists[list].filter(email => {
+                    if (inactiveEmails.has(email)) {
+                        removedEmails[list].push(email);
+                        foundInactiveEmails.add(email);
+                        return false;
                     }
-                }
-            });
-            
-            for (let list in listData) {
-                resultText += list + "\n" + listData[list].join("\n") + "\n\n";
+                    return true;
+                });
             }
             
-            document.getElementById("result").innerText = resultText.trim() || "No emails left after removal.";
+            for (let list in removedEmails) {
+                if (removedEmails[list].length > 0) {
+                    removedEmailsText += list + "\n" + removedEmails[list].join("\n") + "\n\n";
+                }
+            }
+            
+            let notFoundEmails = [...inactiveEmails].filter(email => !foundInactiveEmails.has(email));
+            if (notFoundEmails.length > 0) {
+                notFoundEmailsText += notFoundEmails.join("\n") + "\n";
+            } else {
+                notFoundEmailsText = "All inactive emails were found and removed.";
+            }
+            
+            document.getElementById("removedEmails").innerText = removedEmailsText.trim();
+            document.getElementById("notFoundEmails").innerText = notFoundEmailsText.trim();
         }
     </script>
 </body>
