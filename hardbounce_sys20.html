@@ -22,10 +22,10 @@
     <div class="container">
         <h2>Hard Bounce Removed</h2>
         
-        <label>Enter Inactive Emails (one email per line)</label>
+        <label>Enter Hard bounce Emails (one email per line)</label>
         <textarea id="inactiveEmails" placeholder="a@yahoo.com"></textarea>
         
-        <button onclick="processEmails()">Remove Inactive Emails</button>
+        <button onclick="processEmails()">Remove Hard bounce Emails</button>
         <div class="output" id="removedEmails"></div>
         <div class="output" id="notFoundEmails"></div>
     </div>
@@ -79,7 +79,7 @@
         function processEmails() {
             let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
             if (!inactiveEmailsText) {
-                alert("Please enter inactive emails.");
+                alert("Please enter Hard bounce emails.");
                 return;
             }
             
