@@ -3,131 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID TRACKING</title>
+    <title>Hard Bounce Removal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            background-color: #f4f4f4;
-        }
-        input {
-            margin: 10px;
-            padding: 10px;
-            width: 60%;
-            max-width: 400px;
-            border: 2px solid #007BFF;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-            background: white;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+        body { font-family: Arial, sans-serif; direction: ltr; text-align: left; padding: 20px; background-color: #f9f9f9; margin: 0; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 80px; }
+        textarea { width: 100%; height: 150px; margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        .output { background: #eef; padding: 10px; margin-top: 15px; white-space: pre-wrap; border: 1px solid #ccc; border-radius: 5px; }
+        .navbar { background: #007bff; padding: 10px 20px; position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        .navbar .links { display: flex; gap: 15px; }
+        .navbar a { color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; transition: background 0.3s; }
+        .navbar a:hover { background: #0056b3; }
     </style>
 </head>
 <body>
-    <h2>ID TRACKING</h2>
-    <input type="text" id="encryptedText" placeholder="Enter Sub1">
-    <button onclick="analyzeText()">Analyze</button>
-    <div id="result"></div>
-
+    <div class="navbar">
+        <div class="links">
+            <a href="hard-bounce-removal.html">Hard Bounce Removal</a>
+            <a href="id-tracking.html">ID Tracking</a>
+        </div>
+        <a href="contact.html">Contact Us</a>
+    </div>
+    <div class="container">
+        <h2>Hard Bounce Removal</h2>
+        
+        <label>Enter Inactive Emails (one email per line)</label>
+        <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
+        
+        <button onclick="processEmails()">Remove Inactive Emails</button>
+        <div class="output" id="removedEmails"></div>
+        <div class="output" id="notFoundEmails"></div>
+    </div>
+    
     <script>
-        function analyzeText() {
-            let encryptedText = document.getElementById("encryptedText").value.trim();
-            let resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = "";
+        const sheetID = "1hitIKquEjTtn0Kpk9kaRZV1jt8YmRvv0khliC9zzO0o"; // ضع هنا معرف Google Sheet
+        const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
+        let emailLists = {};
+        
+        async function fetchEmails() {
+            try {
+                const response = await fetch(sheetURL);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                json.table.rows.forEach(row => {
+                    let email = row.c[0]?.v;  
+                    let listName = row.c[1]?.v;  
+                    if (email && listName) {
+                        if (!emailLists[listName]) {
+                            emailLists[listName] = [];
+                        }
+                        emailLists[listName].push(email);
+                    }
+                });
+                console.log("Loaded Email Lists:", emailLists);
+            } catch (error) {
+                console.error("Error fetching Google Sheets data:", error);
+            }
+        }
 
-            encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
-            console.log("Decrypted text: ", encryptedText);
-
-            if (!encryptedText.includes("|")) {
-                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+        async function processEmails() {
+            await fetchEmails();
+            let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
+            if (!inactiveEmailsText) {
+                alert("Please enter inactive emails.");
                 return;
             }
-
-            let parts = encryptedText.split("|");
-            if (parts.length < 2) {
-                resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
-                return;
-            }
-
-            let encryptedPart = parts[1].trim(); 
-            let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
-            let filteredChars = encryptedPart.split("");
             
-            for (let char of ignoreChars) {
-                let index = filteredChars.indexOf(char);
-                if (index !== -1) {
-                    filteredChars.splice(index, 1); // Remove the character once
+            let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
+            let removedEmailsText = "Removed Emails:\n";
+            let notFoundEmailsText = "Not Found Emails:\n";
+            let foundInactiveEmails = new Set();
+            let removedEmails = {};
+            
+            for (let list in emailLists) {
+                removedEmails[list] = [];
+                emailLists[list] = emailLists[list].filter(email => {
+                    if (inactiveEmails.has(email)) {
+                        removedEmails[list].push(email);
+                        foundInactiveEmails.add(email);
+                        return false;
+                    }
+                    return true;
+                });
+            }
+            
+            for (let list in removedEmails) {
+                if (removedEmails[list].length > 0) {
+                    removedEmailsText += list + "\n" + removedEmails[list].join("\n") + "\n\n";
                 }
             }
             
-            let remainingChars = filteredChars.join("");
-            console.log("Remaining characters: ", remainingChars);
-
-            let idList = {
-                "18e": "Badreddine Tassi",
-                "0re": "Youssef Temsamani-Nya",
-                "10y": "Abderrahman Jabili",
-                "187": "Zakariae Ben Zouynah",
-                "17a": "Badreddine Mzouri",
-                "19h": "Oumaima El Alami",
-                "1et": "Rayane Bensalah",
-                "18d": "Hamza Douch ",
-                "17j": "Farouk Sedqi",
-                "0zw": "Shaimae Zerouali",
-                "1d2": "Lamiaee Mai",
-                "1bl": "naoufal Rouas",
-                "0yq": "Asmae Cherkaoui",
-                "0yn": "Zahra Mghait",
-                "1f0": "Khadija El Heddari",
-                "0vo": "Somaia Ghoddani",
-                "1bx": "Mohammed Zaaj",
-                "0xh": "Abderrahime Lemmtouni Chouiakh",
-                "1dn": "Amina Belhaj",
-                "1ai": "Ikram Elyoussoufy",
-                "0z5": "Ayoub Azbakh",
-                "1i9": "Hamza Douch id:2",
-                "1bw": "Mariam Rossi El Hassani",
-                "14o": "Hamza Bakkali",
-                "13d": "Bilal chouati",
-                "0v2": "anas ed-derghami",
-                "18b": "Ismail smaini",
-                "1by": "Adil Agbalu",
-                "1hj": "insaf bouzam",
-                "1d4": "Nihad Akrimel"
-            };
-            
-            let matchedId = Object.keys(idList).find(id => 
-                remainingChars.includes(id) || remainingChars.split("").reverse().join("").includes(id)
-            );
-            
-            if (matchedId) {
-                resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
+            let notFoundEmails = [...inactiveEmails].filter(email => !foundInactiveEmails.has(email));
+            if (notFoundEmails.length > 0) {
+                notFoundEmailsText += notFoundEmails.join("\n") + "\n";
             } else {
-                resultDiv.innerHTML = "❌ No matching ID found";
+                notFoundEmailsText = "All inactive emails were found and removed.";
             }
+            
+            document.getElementById("removedEmails").innerText = removedEmailsText.trim();
+            document.getElementById("notFoundEmails").innerText = notFoundEmailsText.trim();
         }
     </script>
 </body>
