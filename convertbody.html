@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Spam Generator Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-area, .output-area {
+            width: 100%;
+            margin: 20px 0;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            background-color: #f9f9f9;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>HTML Spam Generator Tool</h1>
+        <p>أدخل النموذج البسيط أدناه، ثم اضغط على زر التحويل لإضافة العناصر المشوشة.</p>
+
+        <div class="input-area">
+            <textarea id="inputHTML" placeholder="أدخل النموذج هنا"></textarea>
+        </div>
+
+        <button onclick="generateSpamContent()">تحويل</button>
+
+        <div class="output-area">
+            <h3>النموذج المعدل:</h3>
+            <textarea id="outputHTML" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        function generateSpamContent() {
+            let inputHTML = document.getElementById("inputHTML").value;
+
+            // إضافة العناصر المشوشة (عناصر مشوهة مخفية)
+            const additionalContent = `
+                <div class="hidden">
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    <!-- h34D-jUnk-StArT -->
+                    <span style="display:none;">⚡️z3ro_&#8203;d4rk&#8203;_SP4M<!--XXX--></span>
+                    <span style="display:none;">n0ise-&#8203;Bl0ck💥<!--🔥encoded--></span>
+                    <span style="display:none;">junk&#8203;_inject0r_☠️<!--hidden-->ENCODED</span>
+                    <!-- h34D-jUnk-END -->
+                </div>
+                <div class="bg-junk">
+                    <img src="https://i.ibb.co/f25vM7J/confuse.jpg" />
+                </div>
+                <div class="hidden">
+                    U3BhbW1pbmcgY29udGVudCBpcyBoZXJlIHRvIGZvb2wgdGhlIGZpbHRlcgo=
+                </div>
+            `;
+
+            // دمج المحتوى المشوش مع HTML المدخل
+            let outputHTML = inputHTML + additionalContent;
+
+            // تحديث النموذج المعدل في الواجهة
+            document.getElementById("outputHTML").value = outputHTML;
+        }
+    </script>
+
+</body>
+</html>
