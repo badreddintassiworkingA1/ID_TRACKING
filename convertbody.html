@@ -70,8 +70,9 @@
         function generateSpamContent() {
             let inputHTML = document.getElementById("inputHTML").value;
 
-            // إضافة العناصر المشوشة (عناصر مشوهة مخفية) مع تكثيف العناصر
+            // إضافة العناصر المشوشة مرتين (قبل وبعد المحتوى الأساسي)
             const additionalContent = `
+                <!-- بداية العناصر المشوشة قبل المحتوى -->
                 <div class="hidden">
                     &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
                     &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
@@ -106,13 +107,51 @@
                 <div class="style-junk" style="font-family: 'Comic Sans MS', sans-serif; font-size: 20px; color: red; background-color: black; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
                     Super Spammed Text
                 </div>
-                <!-- More Hidden Elements to Obfuscate -->
-                <div class="hidden" style="visibility: hidden;">[hidden content] &#65279;&#65279;&#65279;</div>
-                <div class="hidden" style="visibility: hidden;">[another hidden content] &#65279;&#65279;&#65279;</div>
+                <!-- نهاية العناصر المشوشة قبل المحتوى -->
+
+                <!-- محتوى النموذج الأصلي يبدأ هنا -->
+                ${inputHTML}
+                
+                <!-- بداية العناصر المشوشة بعد المحتوى -->
+                <div class="hidden">
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    <!-- h34D-jUnk-StArT -->
+                    <span style="display:none;">⚡️z3ro_&#8203;d4rk&#8203;_SP4M<!--XXX--></span>
+                    <span style="display:none;">n0ise-&#8203;Bl0ck💥<!--🔥encoded--></span>
+                    <span style="display:none;">junk&#8203;_inject0r_☠️<!--hidden-->ENCODED</span>
+                    <!-- h34D-jUnk-END -->
+                </div>
+                <div class="bg-junk">
+                    <img src="https://i.ibb.co/f25vM7J/confuse.jpg" />
+                    <img src="https://via.placeholder.com/600x300.png?text=Hidden+Spam" />
+                    <img src="https://via.placeholder.com/600x300.png?text=Spam+Blocker" />
+                    <img src="https://i.ibb.co/6gFwqdd/hidden-image.png" />
+                    <img src="https://via.placeholder.com/600x300.png?text=Junk+Data" />
+                    <img src="https://via.placeholder.com/600x300.png?text=Spam+Prevention" />
+                </div>
+                <div class="hidden">
+                    <!-- Base64 junk text encoding -->
+                    U3BhbW1pbmcgY29udGVudCBpcyBoZXJlIHRvIGZvb2wgdGhlIGZpbHRlcgo=
+                    U2FtcGxlIGVuY29kaW5nIGluIGZpbGUgY29tcGxldGVkIGJ5IHRoZSBodHRwcyBpbmNyZWFzZWQgY29tcGxleCBpbnB1dC4=
+                    Y29uY2VwdCB0aGlzIGZvb2wgY29tcGxleCB0ZXh0IHdpdGggYXBwbGljYXRpb24gd2hlbiB5b3UgZGVjb2RlIHRoaXMgZGV0YWlsLg==
+                    <!-- More Junk -->
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
+                </div>
+                <div class="hidden">
+                    <a href="http://__Domain/redirect.html?od=1[id]syw67be530357eee_vl_twentyvl_18e1.[news].[track]1598.[msgid]" target="_blank" style="color:#fff; display:none;">hidden link</a>
+                </div>
+                <div class="style-junk" style="font-family: 'Comic Sans MS', sans-serif; font-size: 20px; color: red; background-color: black; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
+                    Super Spammed Text
+                </div>
+                <!-- نهاية العناصر المشوشة بعد المحتوى -->
             `;
 
             // دمج المحتوى المشوش مع HTML المدخل
-            let outputHTML = inputHTML + additionalContent;
+            let outputHTML = additionalContent + inputHTML + additionalContent;
 
             // تحديث النموذج المعدل في الواجهة
             document.getElementById("outputHTML").value = outputHTML;
