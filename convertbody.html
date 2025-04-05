@@ -46,22 +46,30 @@
         button:hover {
             background-color: #0056b3;
         }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>HTML Spam Generator Tool</h1>
-        <p>أدخل النموذج البسيط أدناه، ثم اضغط على زر التحويل لإضافة العناصر المشوشة.</p>
+        <p>add simple html</p>
 
         <div class="input-area">
-            <textarea id="inputHTML" placeholder="أدخل النموذج هنا"></textarea>
+            <textarea id="inputHTML" placeholder="Enter the html here"></textarea>
         </div>
 
-        <button onclick="generateSpamContent()">تحويل</button>
+        <div class="button-group">
+            <button onclick="generateSpamContent()">Conversion</button>
+            <button onclick="copyOutput()">Copy</button>
+        </div>
 
         <div class="output-area">
-            <h3>النموذج المعدل:</h3>
+            <h3>the html model:</h3>
             <textarea id="outputHTML" readonly></textarea>
         </div>
     </div>
@@ -70,7 +78,6 @@
         function generateSpamContent() {
             let inputHTML = document.getElementById("inputHTML").value;
 
-            // إضافة العناصر المشوشة مرتين (قبل وبعد المحتوى الأساسي) مع إخفاء العناصر
             const additionalContent = `
                 <!-- بداية العناصر المشوشة قبل المحتوى -->
                 <div class="hidden" style="display: none;">
@@ -108,15 +115,18 @@
                     Super Spammed Text
                 </div>
                 <!-- نهاية العناصر المشوشة قبل المحتوى -->
-
-                <!-- محتوى النموذج الأصلي يبدأ هنا -->
             `;
 
-            // دمج المحتوى المشوش مع HTML المدخل دون تكرار النموذج
             let outputHTML = additionalContent + inputHTML + additionalContent;
-
-            // تحديث النموذج المعدل في الواجهة
             document.getElementById("outputHTML").value = outputHTML;
+        }
+
+        function copyOutput() {
+            const output = document.getElementById("outputHTML");
+            output.select();
+            output.setSelectionRange(0, 99999); // للهواتف
+            document.execCommand("copy");
+            alert("✔️ copy!");
         }
     </script>
 
