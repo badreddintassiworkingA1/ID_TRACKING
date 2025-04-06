@@ -1,53 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Upload Emails to Firestore</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js"></script>
+  <meta charset="UTF-8">
+  <title>Upload JSON to Firestore</title>
 </head>
 <body>
-  <h2>📤 Upload Email Data to SEED</h2>
+  <h2>📤 رفع بيانات Email Lists إلى Firestore</h2>
+  <textarea id="jsonData" placeholder="ألصق هنا بيانات JSON" style="width:100%;height:200px;"></textarea>
+  <br><br>
+  <button onclick="uploadData()">🚀 ارفع الآن</button>
 
-  <textarea id="jsonData" style="width: 100%; height: 300px;" placeholder='Paste your JSON data here...'></textarea>
-  <button onclick="uploadData()">Upload Data</button>
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js";
 
-  <script>
-    // 🔧 Firebase Configuration (استبدل بالقيم الخاصة بك)
     const firebaseConfig = {
       apiKey: "AIzaSyBTMu-iEZODJ-VWc6SdhxrR87WJV4n9D3Y",
       authDomain: "seed-38e79.firebaseapp.com",
       projectId: "seed-38e79"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    async function uploadData() {
-      const raw = document.getElementById("jsonData").value.trim();
-      if (!raw) return alert("Please paste JSON data first.");
-
-      let parsed;
+    window.uploadData = async function () {
+      const textarea = document.getElementById("jsonData");
+      let data;
       try {
-        parsed = JSON.parse(raw);
-      } catch (e) {
-        alert("⚠️ Invalid JSON format");
+        data = JSON.parse(textarea.value);
+      } catch (err) {
+        alert("⚠️ صيغة JSON غير صحيحة");
         return;
       }
 
-      // upload each system
-      for (let system in parsed) {
-        const systemData = parsed[system];
+      const promises = [];
 
-        try {
-          await db.collection("emailLists").doc(system).set(systemData);
-          console.log(`✅ Uploaded ${system}`);
-        } catch (error) {
-          console.error(`❌ Failed for ${system}:`, error);
-        }
+      for (const system in data) {
+        const ref = doc(db, "emailLists", system);
+        const content = data[system];
+        promises.push(setDoc(ref, content));
       }
 
-      alert("✅ All data uploaded successfully.");
+      try {
+        await Promise.all(promises);
+        alert("✅ تم رفع البيانات بنجاح إلى Firestore");
+      } catch (error) {
+        console.error("❌ خطأ في الرفع:", error);
+        alert("⚠️ حدث خطأ أثناء رفع البيانات.");
+      }
     }
   </script>
 </body>
 </html>
+
