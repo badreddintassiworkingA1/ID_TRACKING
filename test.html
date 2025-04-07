@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,42 +57,42 @@
 <body>
 
     <div class="container">
-        <h1>HTML  Generator Tool</h1>
-        <p>اختر النموذج الذي ترغب في تعديله</p>
+        <h1>HTML Generator Tool</h1>
+        <p>Select the model you want to modify</p>
 
-        <!-- أزرار راديو لاختيار النموذج -->
+        <!-- Radio Buttons to choose the model -->
         <div class="model-buttons">
-            <label><input type="radio" name="model" value="model1" onclick="setModel('model1')"> نموذج 1</label>
-            <label><input type="radio" name="model" value="model2" onclick="setModel('model2')"> نموذج 2</label>
-            <label><input type="radio" name="model" value="model3" onclick="setModel('model3')"> نموذج 3</label>
+            <label><input type="radio" name="model" value="model1" onclick="setModel('model1')"> Model 1</label>
+            <label><input type="radio" name="model" value="model2" onclick="setModel('model2')"> Model 2</label>
+            <label><input type="radio" name="model" value="model3" onclick="setModel('model3')"> Model 3</label>
         </div>
 
         <div class="input-area">
-            <textarea id="inputHTML" placeholder="أدخل الـ HTML هنا"></textarea>
+            <textarea id="inputHTML" placeholder="Enter HTML here"></textarea>
         </div>
 
         <div>
-            <button onclick="generateSpamContent()">تحويل</button>
-            <button onclick="copyOutput()">نسخ</button>
+            <button onclick="generateSpamContent()">Generate</button>
+            <button onclick="copyOutput()">Copy</button>
         </div>
 
         <div class="output-area">
-            <h3>النموذج المعدل:</h3>
+            <h3>Modified HTML:</h3>
             <textarea id="outputHTML" readonly></textarea>
         </div>
     </div>
 
     <script>
-        let selectedModel = 'model1'; // النموذج الافتراضي
+        let selectedModel = 'model1'; // default model
 
-        // تحديد النموذج بناءً على اختيار المستخدم
+        // Set the selected model based on the user's choice
         function setModel(model) {
             selectedModel = model;
-            document.getElementById("inputHTML").value = ''; // تفريغ النص المدخل عند التغيير
-            document.getElementById("outputHTML").value = ''; // تفريغ النص الناتج
+            document.getElementById("inputHTML").value = ''; // clear input text when model is changed
+            document.getElementById("outputHTML").value = ''; // clear output text when model is changed
         }
 
-        // توليد المحتوى المشوش بناءً على النموذج المختار
+        // Generate spam content based on the selected model
         function generateSpamContent() {
             let inputHTML = document.getElementById("inputHTML").value;
 
@@ -100,14 +100,14 @@
 
             if (selectedModel === 'model1') {
                 additionalContent = `
-                    <!-- نموذج 1: ترتيب العناصر الأول -->
+                    <!-- Model 1: Element order 1 -->
                     <div class="hidden" style="display: none;">
                         &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                        <!-- بداية الفوضى -->
+                        <!-- Start of Junk -->
                         <span style="display:none;">⚡️SpamStart_12345</span>
                         <span style="display:none;">&#65279;Some junk data</span>
                         <span style="display:none;">hidden-content-X3z</span>
-                        <!-- نهاية الفوضى -->
+                        <!-- End of Junk -->
                     </div>
                     <div class="bg-junk" style="display: none;">
                         <img src="https://i.ibb.co/XXxxXXx/image1.png" />
@@ -115,18 +115,18 @@
                     <div class="hidden" style="display: none;">
                         &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
                     </div>
-                    <!-- المحتوى الأساسي يبدأ هنا -->
+                    <!-- Main content starts here -->
                 `;
             } else if (selectedModel === 'model2') {
                 additionalContent = `
-                    <!-- نموذج 2: ترتيب العناصر الثاني -->
+                    <!-- Model 2: Element order 2 -->
                     <div class="hidden" style="display: none;">
                         &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                        <!-- بداية الفوضى -->
+                        <!-- Start of Junk -->
                         <span style="display:none;">🔒Spam#Blocker_ABC</span>
                         <span style="display:none;">&#65279;SpamIsBadText</span>
                         <span style="display:none;">secret-content-YzD</span>
-                        <!-- نهاية الفوضى -->
+                        <!-- End of Junk -->
                     </div>
                     <div class="bg-junk" style="display: none;">
                         <img src="https://via.placeholder.com/600x300.png?text=Junk+Image+1" />
@@ -134,18 +134,18 @@
                     <div class="hidden" style="display: none;">
                         &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
                     </div>
-                    <!-- المحتوى الأساسي يبدأ هنا -->
+                    <!-- Main content starts here -->
                 `;
             } else if (selectedModel === 'model3') {
                 additionalContent = `
-                    <!-- نموذج 3: ترتيب العناصر الثالث -->
+                    <!-- Model 3: Element order 3 -->
                     <div class="hidden" style="display: none;">
                         &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                        <!-- بداية الفوضى -->
+                        <!-- Start of Junk -->
                         <span style="display:none;">⚡️RandomText_SpamStart</span>
                         <span style="display:none;">&#65279;InvisibleJunk1234</span>
                         <span style="display:none;">content_hidden--AqT</span>
-                        <!-- نهاية الفوضى -->
+                        <!-- End of Junk -->
                     </div>
                     <div class="bg-junk" style="display: none;">
                         <img src="https://i.ibb.co/ZHf4R7M/image2.png" />
@@ -153,7 +153,7 @@
                     <div class="hidden" style="display: none;">
                         &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
                     </div>
-                    <!-- المحتوى الأساسي يبدأ هنا -->
+                    <!-- Main content starts here -->
                 `;
             }
 
@@ -166,7 +166,7 @@
             output.select();
             output.setSelectionRange(0, 99999); // For mobile devices
             document.execCommand("copy");
-            alert("✔️ تم نسخ النموذج المعدل!");
+            alert("✔️ Modified HTML copied to clipboard!");
         }
     </script>
 
