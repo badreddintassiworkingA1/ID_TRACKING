@@ -1,110 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hard Bounce Removal</title>
-    <style>
-        body { font-family: Arial, sans-serif; direction: ltr; text-align: left; padding: 20px; background-color: #f9f9f9; margin: 0; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 80px; }
-        textarea { width: 100%; height: 150px; margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #0056b3; }
-        .output { background: #eef; padding: 10px; margin-top: 15px; white-space: pre-wrap; border: 1px solid #ccc; border-radius: 5px; }
-        .navbar { background: #007bff; padding: 10px 20px; position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-        .navbar .links { display: flex; gap: 15px; }
-        .navbar a { color: white; text-decoration: none; padding: 10px 15px; border-radius: 5px; transition: background 0.3s; }
-        .navbar a:hover { background: #0056b3; }
-    </style>
+  <meta charset="UTF-8">
+  <title>SPF مفتوح - فحص دومينات</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+    textarea { width: 100%; height: 200px; margin-top: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    .result { background: #fff; padding: 15px; margin-top: 20px; border-radius: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="links">
-            <a href="hard-bounce-removal.html">Hard Bounce Removal</a>
-            <a href="id-tracking.html">ID Tracking</a>
-        </div>
-        <a href="contact.html">Contact Us</a>
-    </div>
-    <div class="container">
-        <h2>Hard Bounce Removal</h2>
-        
-        <label>Enter Inactive Emails (one email per line)</label>
-        <textarea id="inactiveEmails" placeholder="b@yahoo.com\n3@yahoo.com"></textarea>
-        
-        <button onclick="processEmails()">Remove Inactive Emails</button>
-        <div class="output" id="removedEmails"></div>
-        <div class="output" id="notFoundEmails"></div>
-    </div>
-    
-    <script>
-        const sheetID = "1hitIKquEjTtn0Kpk9kaRZV1jt8YmRvv0khliC9zzO0o"; // ضع هنا معرف Google Sheet
-        const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
-        let emailLists = {};
-        
-        async function fetchEmails() {
-            try {
-                const response = await fetch(sheetURL);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47, text.length - 2));
-                
-                json.table.rows.forEach(row => {
-                    let email = row.c[0]?.v;  
-                    let listName = row.c[1]?.v;  
-                    if (email && listName) {
-                        if (!emailLists[listName]) {
-                            emailLists[listName] = [];
-                        }
-                        emailLists[listName].push(email);
-                    }
-                });
-                console.log("Loaded Email Lists:", emailLists);
-            } catch (error) {
-                console.error("Error fetching Google Sheets data:", error);
-            }
-        }
 
-        async function processEmails() {
-            await fetchEmails();
-            let inactiveEmailsText = document.getElementById("inactiveEmails").value.trim();
-            if (!inactiveEmailsText) {
-                alert("Please enter inactive emails.");
-                return;
-            }
-            
-            let inactiveEmails = new Set(inactiveEmailsText.split('\n').map(e => e.trim()));
-            let removedEmailsText = "Removed Emails:\n";
-            let notFoundEmailsText = "Not Found Emails:\n";
-            let foundInactiveEmails = new Set();
-            let removedEmails = {};
-            
-            for (let list in emailLists) {
-                removedEmails[list] = [];
-                emailLists[list] = emailLists[list].filter(email => {
-                    if (inactiveEmails.has(email)) {
-                        removedEmails[list].push(email);
-                        foundInactiveEmails.add(email);
-                        return false;
-                    }
-                    return true;
-                });
-            }
-            
-            for (let list in removedEmails) {
-                if (removedEmails[list].length > 0) {
-                    removedEmailsText += list + "\n" + removedEmails[list].join("\n") + "\n\n";
-                }
-            }
-            
-            let notFoundEmails = [...inactiveEmails].filter(email => !foundInactiveEmails.has(email));
-            if (notFoundEmails.length > 0) {
-                notFoundEmailsText += notFoundEmails.join("\n") + "\n";
-            } else {
-                notFoundEmailsText = "All inactive emails were found and removed.";
-            }
-            
-            document.getElementById("removedEmails").innerText = removedEmailsText.trim();
-            document.getElementById("notFoundEmails").innerText = notFoundEmailsText.trim();
+  <h2>🔍 فحص الدومينات التي تسمح بـ SPF PASS للجميع</h2>
+  <p>ألصق الدومينات هنا (دومين في كل سطر):</p>
+  <textarea id="domains" placeholder="example.com&#10;anotherdomain.com"></textarea>
+  <button onclick="checkSPF()">ابدأ الفحص</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    async function fetchSPF(domain) {
+      const url = `https://dns.google/resolve?name=${domain}&type=TXT`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data || !data.Answer) return null;
+
+      return data.Answer.map(a => a.data.replace(/"/g, '')).find(txt => txt.startsWith('v=spf1'));
+    }
+
+    async function checkSPF() {
+      const input = document.getElementById('domains').value.trim();
+      const domains = input.split('\n').map(d => d.trim()).filter(Boolean);
+      const output = document.getElementById('output');
+      output.innerHTML = '⏳ جاري الفحص...';
+
+      const results = [];
+
+      for (let domain of domains) {
+        try {
+          const spf = await fetchSPF(domain);
+          if (spf && (spf.includes('+all') || spf.includes('ip4:0.0.0.0/0'))) {
+            results.push(`${domain} ✅ يحتوي على SPF مفتوح: <code>${spf}</code>`);
+          }
+        } catch (e) {
+          console.error(`فشل الفحص للدومين: ${domain}`, e);
         }
-    </script>
+      }
+
+      output.innerHTML = results.length
+        ? `<strong>النتائج:</strong><br>` + results.join('<br><br>')
+        : '❌ لم يتم العثور على دومينات تحتوي على SPF مفتوح.';
+    }
+  </script>
+
 </body>
 </html>
