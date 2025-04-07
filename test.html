@@ -46,33 +46,32 @@
         button:hover {
             background-color: #0056b3;
         }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
         .model-buttons {
             margin-bottom: 20px;
+        }
+        .model-buttons label {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>HTML Spam Generator Tool</h1>
+        <h1>HTML  Generator Tool</h1>
         <p>اختر النموذج الذي ترغب في تعديله</p>
 
+        <!-- أزرار راديو لاختيار النموذج -->
         <div class="model-buttons">
-            <button onclick="setModel('model1')">نموذج 1</button>
-            <button onclick="setModel('model2')">نموذج 2</button>
-            <button onclick="setModel('model3')">نموذج 3</button>
+            <label><input type="radio" name="model" value="model1" onclick="setModel('model1')"> نموذج 1</label>
+            <label><input type="radio" name="model" value="model2" onclick="setModel('model2')"> نموذج 2</label>
+            <label><input type="radio" name="model" value="model3" onclick="setModel('model3')"> نموذج 3</label>
         </div>
 
         <div class="input-area">
             <textarea id="inputHTML" placeholder="أدخل الـ HTML هنا"></textarea>
         </div>
 
-        <div class="button-group">
+        <div>
             <button onclick="generateSpamContent()">تحويل</button>
             <button onclick="copyOutput()">نسخ</button>
         </div>
@@ -86,7 +85,7 @@
     <script>
         let selectedModel = 'model1'; // النموذج الافتراضي
 
-        // تحديد النموذج
+        // تحديد النموذج بناءً على اختيار المستخدم
         function setModel(model) {
             selectedModel = model;
             document.getElementById("inputHTML").value = ''; // تفريغ النص المدخل عند التغيير
