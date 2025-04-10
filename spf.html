@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPF Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; font-size: 16px; }
+    textarea { height: 100px; }
+    #output { white-space: pre-wrap; background: #e8e8e8; padding: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <h2>SPF Record Generator</h2>
+
+  <label>Domain:</label>
+  <input type="text" id="domain" placeholder="example.com">
+
+  <label>IPs (one per line or comma separated):</label>
+  <textarea id="ips" placeholder="207.38.89.235&#10;69.64.40.169"></textarea>
+
+  <button onclick="generateSPF()">Generate SPF Record</button>
+
+  <h3>Result:</h3>
+  <div id="output"></div>
+
+  <script>
+    function generateSPF() {
+      const domain = document.getElementById("domain").value.trim();
+      const ipInput = document.getElementById("ips").value;
+
+      if (!domain || !ipInput) {
+        document.getElementById("output").textContent = "Please enter both domain and IPs.";
+        return;
+      }
+
+      // Split IPs by comma, newline, or whitespace
+      const ipList = ipInput.split(/[\n, ]+/).filter(ip => ip);
+
+      const ipFormatted = ipList.map(ip => `ip4:${ip}`).join(" ");
+      const spf = `${domain},v=spf1 a mx ${ipFormatted} -all`;
+
+      document.getElementById("output").textContent = spf;
+    }
+  </script>
+
+</body>
+</html>
