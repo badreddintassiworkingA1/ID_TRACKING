@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل العروض ووقت الإرسال</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>تحليل العروض ووقت الإرسال</h1>
+        
+        <table id="offers-table">
+            <thead>
+                <tr>
+                    <th>اسم العرض</th>
+                    <th>الفئة المستهدفة</th>
+                    <th>وقت الإرسال</th>
+                    <th>معدل الفتح (%)</th>
+                    <th>معدل النقر (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- سيتم إضافة الصفوف هنا عبر JavaScript -->
+            </tbody>
+        </table>
+        
+        <div>
+            <button onclick="suggestBestOffer()">اقتراح العرض الأمثل لهذا اليوم</button>
+        </div>
+    </div>
+
+    <script>
+        // بيانات العروض
+        const offers = [
+            { name: "عرض خصم 20%", target: "عملاء جدد", sendTime: "10:00 AM", openRate: 30, clickRate: 15 },
+            { name: "اشتراك مجاني 1 شهر", target: "مستخدمين قدامى", sendTime: "2:00 PM", openRate: 25, clickRate: 10 },
+            { name: "عرض خاص للصحة والجمال", target: "النساء المهتمات بالصحة", sendTime: "5:00 PM", openRate: 40, clickRate: 20 },
+        ];
+
+        // إضافة البيانات إلى الجدول
+        function loadTableData() {
+            const tableBody = document.getElementById("offers-table").getElementsByTagName('tbody')[0];
+            offers.forEach(offer => {
+                let row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${offer.name}</td>
+                    <td>${offer.target}</td>
+                    <td>${offer.sendTime}</td>
+                    <td>${offer.openRate}%</td>
+                    <td>${offer.clickRate}%</td>
+                `;
+            });
+        }
+
+        // وظيفة لاقتراح العرض الأمثل لهذا اليوم
+        function suggestBestOffer() {
+            let bestOffer = offers.reduce((max, offer) => (offer.openRate > max.openRate ? offer : max), offers[0]);
+            alert(`أفضل عرض اليوم: ${bestOffer.name} \nوقت الإرسال الموصى به: ${bestOffer.sendTime}`);
+        }
+
+        // تحميل البيانات عند تحميل الصفحة
+        window.onload = loadTableData;
+    </script>
+
+</body>
+</html>
