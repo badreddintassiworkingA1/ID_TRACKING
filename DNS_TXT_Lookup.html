@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DNS TXT Lookup</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+    input, button { padding: 10px; width: 100%; margin: 10px 0; font-size: 16px; }
+    #output { white-space: pre-wrap; background: #fff; padding: 10px; border-radius: 5px; min-height: 100px; }
+  </style>
+</head>
+<body>
+
+  <h2>DNS TXT Record Lookup</h2>
+
+  <input type="text" id="domain" placeholder="Enter domain (e.g. example.com)">
+  <button onclick="lookupTXT()">Lookup TXT Records</button>
+
+  <div id="output">Result will appear here...</div>
+
+  <script>
+    async function lookupTXT() {
+      const domain = document.getElementById("domain").value.trim();
+      const output = document.getElementById("output");
+      if (!domain) {
+        output.textContent = "Please enter a domain.";
+        return;
+      }
+
+      output.textContent = "Looking up TXT records...";
+
+      try {
+        const res = await fetch(`https://dns.google/resolve?name=${domain}&type=TXT`);
+        const data = await res.json();
+
+        if (!data.Answer) {
+          output.textContent = "No TXT records found or domain not valid.";
+          return;
+        }
+
+        const txtRecords = data.Answer
+          .map(ans => ans.data.replace(/"/g, '')) // remove quotes
+          .join('\n\n');
+
+        output.textContent = txtRecords;
+      } catch (err) {
+        output.textContent = "Error fetching DNS records.";
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
