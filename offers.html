@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحليل العروض ووقت الإرسال</title>
-    
+    <title>تحليل العروض الشهرية</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +18,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -61,12 +60,33 @@
         button:hover {
             background-color: #45a049;
         }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        /* Styles for the file input */
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>تحليل العروض ووقت الإرسال</h1>
+        <h1>تحليل العروض الشهرية</h1>
+        
+        <!-- نموذج لتحميل البيانات -->
+        <div class="input-container">
+            <label for="fileInput">تحميل بيانات العروض (CSV/JSON):</label>
+            <input type="file" id="fileInput" accept=".csv, .json">
+            <button onclick="processData()">تحليل البيانات</button>
+        </div>
         
         <table id="offers-table">
             <thead>
@@ -82,23 +102,57 @@
                 <!-- سيتم إضافة الصفوف هنا عبر JavaScript -->
             </tbody>
         </table>
-        
-        <div>
-            <button onclick="suggestBestOffer()">اقتراح العرض الأمثل لهذا اليوم</button>
+
+        <div id="results">
+            <!-- سيتم عرض النتائج التحليلية هنا -->
         </div>
     </div>
 
     <script>
-        // بيانات العروض
-        const offers = [
-            { name: "عرض خصم 20%", target: "عملاء جدد", sendTime: "10:00 AM", openRate: 30, clickRate: 15 },
-            { name: "اشتراك مجاني 1 شهر", target: "مستخدمين قدامى", sendTime: "2:00 PM", openRate: 25, clickRate: 10 },
-            { name: "عرض خاص للصحة والجمال", target: "النساء المهتمات بالصحة", sendTime: "5:00 PM", openRate: 40, clickRate: 20 },
-        ];
+        let offers = []; // لتخزين بيانات العروض
+
+        // تحميل البيانات من الملف (CSV أو JSON)
+        function processData() {
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const fileContent = event.target.result;
+                    // إذا كان الملف JSON
+                    if (file.name.endsWith(".json")) {
+                        offers = JSON.parse(fileContent);
+                    }
+                    // إذا كان الملف CSV
+                    else if (file.name.endsWith(".csv")) {
+                        offers = parseCSV(fileContent);
+                    }
+                    loadTableData();
+                    generateAnalysis();
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // تحويل البيانات من CSV إلى JSON
+        function parseCSV(csvData) {
+            const rows = csvData.split("\n");
+            const headers = rows[0].split(",");
+            const data = rows.slice(1).map(row => {
+                const values = row.split(",");
+                const entry = {};
+                headers.forEach((header, i) => {
+                    entry[header.trim()] = values[i].trim();
+                });
+                return entry;
+            });
+            return data;
+        }
 
         // إضافة البيانات إلى الجدول
         function loadTableData() {
             const tableBody = document.getElementById("offers-table").getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ""; // تنظيف الجدول القديم
             offers.forEach(offer => {
                 let row = tableBody.insertRow();
                 row.innerHTML = `
@@ -111,14 +165,19 @@
             });
         }
 
-        // وظيفة لاقتراح العرض الأمثل لهذا اليوم
-        function suggestBestOffer() {
-            let bestOffer = offers.reduce((max, offer) => (offer.openRate > max.openRate ? offer : max), offers[0]);
-            alert(`أفضل عرض اليوم: ${bestOffer.name} \nوقت الإرسال الموصى به: ${bestOffer.sendTime}`);
+        // تحليل البيانات وعرض النتائج
+        function generateAnalysis() {
+            // تحليل العرض الأكثر نجاحًا بناءً على معدل الفتح والنقر
+            const bestOffer = offers.reduce((best, current) => 
+                (current.openRate > best.openRate) ? current : best, offers[0]);
+            
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = `
+                <h2>النتائج التحليلية:</h2>
+                <p>أفضل عرض في الشهر هو: <strong>${bestOffer.name}</strong></p>
+                <p>أفضل وقت للإرسال كان: <strong>${bestOffer.sendTime}</strong></p>
+            `;
         }
-
-        // تحميل البيانات عند تحميل الصفحة
-        window.onload = loadTableData;
     </script>
 
 </body>
