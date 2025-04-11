@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email & DNS Toolkit</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+    nav { background: #2c3e50; color: white; display: flex; flex-wrap: wrap; padding: 10px; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 15px;
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+    nav a:hover { background: #34495e; }
+    .container { padding: 20px; }
+    .tool { display: none; margin-top: 20px; }
+    textarea, input, button {
+      width: 100%; padding: 10px; margin: 10px 0; font-size: 16px;
+    }
+    .output { white-space: pre-wrap; background: #fff; padding: 10px; border-radius: 5px; min-height: 100px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" onclick="showTool('spf')">SPF Generator</a>
+    <a href="#" onclick="showTool('spf-check')">SPF Checker</a>
+    <a href="#" onclick="showTool('dmarc')">DMARC Generator</a>
+    <a href="#" onclick="showTool('dkim')">DKIM Generator</a>
+    <a href="#" onclick="showTool('dns')">DNS TXT Lookup</a>
+    <a href="#" onclick="showTool('mx')">MX Lookup</a>
+    <a href="#" onclick="showTool('blacklist')">Blacklist Checker</a>
+    <a href="#" onclick="showTool('header')">Email Header Parser</a>
+    <a href="#" onclick="showTool('spf-flatten')">SPF Flattener</a>
+    <a href="#" onclick="showTool('whois')">WHOIS + DNS</a>
+  </nav>
+
+  <div class="container">
+    <!-- Placeholder sections for each tool -->
+    <div id="spf" class="tool">
+      <h2>SPF Generator</h2>
+      <input type="text" id="spf-domain" placeholder="example.com">
+      <textarea id="spf-ips" placeholder="207.38.89.235\n69.64.40.169"></textarea>
+      <button onclick="generateSPF()">Generate SPF Record</button>
+      <div class="output" id="spf-output"></div>
+    </div>
+
+    <div id="spf-check" class="tool">
+      <h2>SPF Checker (Coming Soon)</h2>
+    </div>
+
+    <div id="dmarc" class="tool">
+      <h2>DMARC Generator (Coming Soon)</h2>
+    </div>
+
+    <div id="dkim" class="tool">
+      <h2>DKIM Generator (Coming Soon)</h2>
+    </div>
+
+    <div id="dns" class="tool">
+      <h2>DNS TXT Lookup</h2>
+      <input type="text" id="dns-domain" placeholder="example.com">
+      <button onclick="lookupTXT()">Lookup TXT Records</button>
+      <div class="output" id="dns-output"></div>
+    </div>
+
+    <div id="mx" class="tool">
+      <h2>MX Lookup (Coming Soon)</h2>
+    </div>
+
+    <div id="blacklist" class="tool">
+      <h2>Blacklist Checker (Coming Soon)</h2>
+    </div>
+
+    <div id="header" class="tool">
+      <h2>Email Header Parser (Coming Soon)</h2>
+    </div>
+
+    <div id="spf-flatten" class="tool">
+      <h2>SPF Flattener (Coming Soon)</h2>
+    </div>
+
+    <div id="whois" class="tool">
+      <h2>WHOIS + DNS Bundle (Coming Soon)</h2>
+    </div>
+  </div>
+
+  <script>
+    function showTool(id) {
+      document.querySelectorAll('.tool').forEach(t => t.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function generateSPF() {
+      const domain = document.getElementById("spf-domain").value.trim();
+      const ipInput = document.getElementById("spf-ips").value;
+      const output = document.getElementById("spf-output");
+
+      if (!domain || !ipInput) {
+        output.textContent = "Please enter both domain and IPs.";
+        return;
+      }
+
+      const ipList = ipInput.split(/[\n, ]+/).filter(ip => ip);
+      const ipFormatted = ipList.map(ip => `ip4:${ip}`).join(" ");
+      const spf = `${domain},v=spf1 a mx ${ipFormatted} -all`;
+
+      output.textContent = spf;
+    }
+
+    async function lookupTXT() {
+      const domain = document.getElementById("dns-domain").value.trim();
+      const output = document.getElementById("dns-output");
+      if (!domain) {
+        output.textContent = "Please enter a domain.";
+        return;
+      }
+
+      output.textContent = "Looking up TXT records...";
+
+      try {
+        const res = await fetch(`https://dns.google/resolve?name=${domain}&type=TXT`);
+        const data = await res.json();
+
+        if (!data.Answer) {
+          output.textContent = "No TXT records found or domain not valid.";
+          return;
+        }
+
+        const txtRecords = data.Answer
+          .map(ans => ans.data.replace(/\\"/g, ''))
+          .join('\n\n');
+
+        output.textContent = txtRecords;
+      } catch (err) {
+        output.textContent = "Error fetching DNS records.";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
