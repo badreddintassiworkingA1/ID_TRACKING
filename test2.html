@@ -165,7 +165,7 @@
       "17a": "Badreddine Mzouri",
       "19h": "Oumaima El Alami",
       "1et": "Rayane Bensalah",
-      "18d": "Hamza Douch ",
+      "18d": "Hamza Douch",
       "17j": "Farouk Sedqi",
       "0zw": "Shaimae Zerouali",
       "1d2": "Lamiaee Mai",
@@ -221,18 +221,23 @@
       return Array.from(variants);
     }
 
+    function extractPossibleIds(text) {
+      let possibleIds = new Set();
+      for (let i = 0; i < text.length - 2; i++) {
+        let candidate = text.substring(i, i + 3);
+        if (/^[a-z0-9]{3}$/i.test(candidate)) {
+          possibleIds.add(candidate);
+        }
+      }
+      return Array.from(possibleIds);
+    }
+
     function analyzeText() {
       let encryptedText = document.getElementById("encryptedText").value.trim();
       let resultDiv = document.getElementById("result");
       resultDiv.innerHTML = "";
 
-      try {
-        encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
-      } catch (e) {
-        resultDiv.innerHTML = "⚠️ Invalid encoding in input.";
-        return;
-      }
-
+      encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
       if (!encryptedText.includes("|")) {
         resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
         return;
@@ -247,28 +252,26 @@
       let encryptedPart = parts[1].trim();
       let possibleVariants = generateVariants(encryptedPart, ignoreChars);
       let matchedId = null;
-      let possibleMatches = new Set();
 
       for (let variant of possibleVariants) {
         for (let id of Object.keys(idList)) {
-          if (
-            variant.includes(id) ||
-            variant.split("").reverse().join("").includes(id)
-          ) {
-            if (!matchedId) matchedId = id;
-            possibleMatches.add(id);
+          if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
+            matchedId = id;
+            break;
           }
         }
+        if (matchedId) break;
       }
 
       if (matchedId) {
         resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br>👤 <b>${idList[matchedId]}</b>`;
       } else {
-        if (possibleMatches.size > 0) {
-          resultDiv.innerHTML = `❌ No matching ID found<br>🔍 <b>Possible matches:</b> ${Array.from(possibleMatches).join(", ")}`;
-        } else {
-          resultDiv.innerHTML = "❌ No matching ID found<br>🧩 <i>No possible patterns detected</i>";
-        }
+        let guessedIds = extractPossibleIds(encryptedPart);
+        resultDiv.innerHTML = `
+          ❌ No matching ID found.<br>
+          🔎 <b>Suggested possible IDs:</b><br>
+          ${guessedIds.slice(0, 10).join(" – ")}
+        `;
       }
     }
 
