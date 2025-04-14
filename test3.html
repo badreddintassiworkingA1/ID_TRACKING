@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decryption Analysis</title>
+    <title>ID TRACKING</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 50px;
             background-color: #f4f4f4;
+            padding-top: 80px;
         }
+
         input {
             margin: 10px;
             padding: 10px;
@@ -20,6 +22,7 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -30,9 +33,11 @@
             cursor: pointer;
             transition: background 0.3s ease;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         #result {
             margin-top: 20px;
             font-weight: bold;
@@ -44,15 +49,77 @@
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        .navbar {
+            background: #007bff;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <h2>Decryption Analysis</h2>
-    <input type="text" id="encryptedText" placeholder="Enter encrypted text">
+
+    <h2>ID TRACKING</h2>
+    <input type="text" id="encryptedText" placeholder="Enter Sub1">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
 
     <script>
+        function generateVariants(text, ignoreChars) {
+            let variants = new Set();
+
+            function removeOneCharPerIgnore(textArr, i = 0) {
+                if (i >= ignoreChars.length) {
+                    variants.add(textArr.join(""));
+                    return;
+                }
+
+                let char = ignoreChars[i];
+                let indexes = [];
+
+                textArr.forEach((c, idx) => {
+                    if (c === char) indexes.push(idx);
+                });
+
+                if (indexes.length === 0) {
+                    removeOneCharPerIgnore(textArr, i + 1);
+                } else {
+                    for (let idx of indexes) {
+                        let newArr = [...textArr];
+                        newArr.splice(idx, 1);
+                        removeOneCharPerIgnore(newArr, i + 1);
+                    }
+                }
+            }
+
+            removeOneCharPerIgnore([...text], 0);
+            return Array.from(variants);
+        }
+
         function analyzeText() {
             let encryptedText = document.getElementById("encryptedText").value.trim();
             let resultDiv = document.getElementById("result");
@@ -61,7 +128,12 @@
             encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
             console.log("Decrypted text: ", encryptedText);
 
-            let parts = encryptedText.includes("|") ? encryptedText.split("|") : encryptedText.split("%7C");
+            if (!encryptedText.includes("|")) {
+                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+                return;
+            }
+
+            let parts = encryptedText.split("|");
             if (parts.length < 2) {
                 resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
                 return;
@@ -69,46 +141,61 @@
 
             let encryptedPart = parts[1].trim(); 
             let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
-            let filteredChars = encryptedPart.split("");
 
-            for (let char of ignoreChars) {
-                let index = filteredChars.indexOf(char);
-                if (index !== -1) {
-                    filteredChars.splice(index, 1); // Remove the character once
-                }
-            }
+            let possibleVariants = generateVariants(encryptedPart, ignoreChars);
 
-            let remainingChars = filteredChars.join("");
-            console.log("Remaining characters: ", remainingChars);
-
-            const idList = {
+            let idList = {
                 "18e": "Badreddine Tassi",
+                "0re": "Youssef Temsamani-Nya",
                 "10y": "Abderrahman Jabili",
                 "187": "Zakariae Ben Zouynah",
                 "17a": "Badreddine Mzouri",
                 "19h": "Oumaima El Alami",
                 "1et": "Rayane Bensalah",
-                "1ai": "Rayane Bensalah 2",
-                "1gg": "Hamza Douch",
-                "18d": "Hamza Douch 2",
+                "18d": "Hamza Douch ",
                 "17j": "Farouk Sedqi",
                 "0zw": "Shaimae Zerouali",
                 "1d2": "Lamiaee Mai",
-                "1bl": "Naoufal",
+                "1bl": "naoufal Rouas",
                 "0yq": "Asmae Cherkaoui",
                 "0yn": "Zahra Mghait",
                 "1f0": "Khadija El Heddari",
                 "0vo": "Somaia Ghoddani",
+                "1bx": "Mohammed Zaaj",
                 "0xh": "Abderrahime Lemmtouni Chouiakh",
+                "1dn": "Amina Belhaj",
+                "1ai": "Ikram Elyoussoufy",
+                "0z5": "Ayoub Azbakh",
+                "1i9": "Hamza Douch id:2",
+                "1bw": "Mariam Rossi El Hassani",
+                "14o": "Hamza Bakkali",
+                "13d": "Bilal chouati",
+                "0v2": "anas ed-derghami",
+                "18b": "Ismail smaini",
+                "1by": "Adil Agbalu",
+                "1hj": "insaf bouzam",
+                "179": "Nadia Defaf",
                 "1d4": "Nihad Akrimel"
             };
 
-            let suggestedId = Object.keys(idList).find(id => remainingChars.includes(id) || remainingChars.split("").reverse().join("").includes(id));
+            let matchedId = null;
 
-            if (suggestedId && idList[suggestedId]) {
-                resultDiv.innerHTML = `✅ Matching ID: ${suggestedId} (${idList[suggestedId]})`;
-            } else if (suggestedId) {
-                resultDiv.innerHTML = `🔍 Suggested ID: ${suggestedId}`;
+            for (let variant of possibleVariants) {
+                for (let id of Object.keys(idList)) {
+                    if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
+                        matchedId = id;
+                        break;
+                    }
+                }
+                if (matchedId) break;
+            }
+
+            if (matchedId) {
+                resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
+            } else {
+                // Suggesting a potential ID based on remaining characters
+                let suggestedId = possibleVariants[0].slice(0, 3); // For example, the first 3 characters as the suggestion.
+                resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId}`;
             }
         }
     </script>
