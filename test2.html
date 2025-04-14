@@ -155,6 +155,34 @@
   </div>
 
   <script>
+    function analyzeText() {
+  const encryptedText = document.getElementById("encryptedText").value.trim();
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
+
+  let decoded = decodeURIComponent(decodeURIComponent(encryptedText));
+  const parts = decoded.split("|");
+
+  if (parts.length < 2) {
+    resultDiv.innerHTML = "⚠️ Invalid encrypted text";
+    return;
+  }
+
+  const subid = parts[1];
+
+  // حذف الأحرف المحددة فقط
+  const ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
+  const cleaned = subid
+    .split("")
+    .filter(char => !ignoreChars.includes(char.toLowerCase()))
+    .join("");
+
+  // استخراج احتمالات من 3 خانات متتالية فقط
+  const suggestions = new Set();
+  for (let i = 0; i < cleaned.length - 2; i++) {
+    suggestions.add(cleaned.substr(i, 3));
+  }
+
     const ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
 
     const idList = {
@@ -190,101 +218,22 @@
       "1d4": "Nihad Akrimel"
     };
 
-    function generateVariants(text, ignoreChars) {
-      let variants = new Set();
-
-      function removeOneCharPerIgnore(textArr, i = 0) {
-        if (i >= ignoreChars.length) {
-          variants.add(textArr.join(""));
-          return;
-        }
-
-        let char = ignoreChars[i];
-        let indexes = [];
-
-        textArr.forEach((c, idx) => {
-          if (c === char) indexes.push(idx);
-        });
-
-        if (indexes.length === 0) {
-          removeOneCharPerIgnore(textArr, i + 1);
-        } else {
-          for (let idx of indexes) {
-            let newArr = [...textArr];
-            newArr.splice(idx, 1);
-            removeOneCharPerIgnore(newArr, i + 1);
-          }
-        }
-      }
-
-      removeOneCharPerIgnore([...text], 0);
-      return Array.from(variants);
+  let matchedId = null;
+  for (let id of Object.keys(idList)) {
+    if (cleaned.includes(id) || cleaned.includes(id.split("").reverse().join(""))) {
+      matchedId = id;
+      break;
     }
+  }
 
-    function extractPossibleIds(text) {
-      let possibleIds = new Set();
-      for (let i = 0; i < text.length - 2; i++) {
-        let candidate = text.substring(i, i + 3);
-        if (/^[a-z0-9]{3}$/i.test(candidate)) {
-          possibleIds.add(candidate);
-        }
-      }
-      return Array.from(possibleIds);
-    }
-
-    function analyzeText() {
-      let encryptedText = document.getElementById("encryptedText").value.trim();
-      let resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
-
-      encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
-      if (!encryptedText.includes("|")) {
-        resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
-        return;
-      }
-
-      let parts = encryptedText.split("|");
-      if (parts.length < 2) {
-        resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
-        return;
-      }
-
-      let encryptedPart = parts[1].trim();
-      let possibleVariants = generateVariants(encryptedPart, ignoreChars);
-      let matchedId = null;
-
-      for (let variant of possibleVariants) {
-        for (let id of Object.keys(idList)) {
-          if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
-            matchedId = id;
-            break;
-          }
-        }
-        if (matchedId) break;
-      }
-
-      if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br>👤 <b>${idList[matchedId]}</b>`;
-      } else {
-        let guessedIds = extractPossibleIds(encryptedPart);
-        resultDiv.innerHTML = `
-          ❌ No matching ID found.<br>
-          🔎 <b>Suggested possible IDs:</b><br>
-          ${guessedIds.slice(0, 10).join(" – ")}
-        `;
-      }
-    }
-
-    function toggleTheme() {
-      const body = document.body;
-      body.classList.toggle("dark");
-      localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "dark") document.body.classList.add("dark");
-    });
+  if (matchedId) {
+    resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br>👤 <b>${idList[matchedId]}</b>`;
+  } else {
+    resultDiv.innerHTML = `❌ No matching ID found<br><br>
+    🔍 <b>Suggested IDs:</b><br>
+    <div class="suggestion">${Array.from(suggestions).join(" &bull; ")}</div>`;
+  }
+}
   </script>
 </body>
 </html>
