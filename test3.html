@@ -5,24 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID TRACKING</title>
     <style>
-        /* الوضع العادي (Light Mode) */
+        /* التصميم الأساسي (الأنماط العادية) */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            background-color: #f4f4f4;
-            padding-top: 80px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #f0f4f7, #d1dde9);
+            margin: 0;
+            padding: 0;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #444;
+        }
+
+        .navbar {
+            background: #007BFF;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h2 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .mode-toggle {
+            background-color: #444;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .mode-toggle:hover {
+            background-color: #007BFF;
         }
 
         input, button {
-            margin: 10px;
-            padding: 10px;
-            width: 60%;
-            max-width: 400px;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background 0.3s ease, color 0.3s ease;
+            font-size: 1rem;
+            padding: 12px;
+            width: 70%;
+            max-width: 450px;
+            margin: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, button:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
 
         button {
@@ -34,102 +75,92 @@
 
         button:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
         }
 
         #result {
             margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-            background: white;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            background-color: #ffffff;
             color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .navbar {
-            background: #007bff;
-            padding: 10px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar .links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-
-        .navbar a:hover {
-            background: #0056b3;
-        }
-
-        /* الوضع الداكن (Dark Mode) */
-        body.dark-mode {
+        .dark-mode {
             background-color: #333;
             color: white;
         }
 
-        input.dark-mode, button.dark-mode {
-            background-color: #555;
-            color: white;
-            border: 2px solid #444;
-        }
-
-        button.dark-mode:hover {
-            background-color: #444;
-        }
-
-        #result.dark-mode {
+        .dark-mode #result {
             background-color: #444;
             color: white;
         }
 
-        /* أيقونة التبديل بين الأوضاع */
+        .dark-mode button {
+            background-color: #1e1e1e;
+            color: #ccc;
+        }
+
+        .dark-mode button:hover {
+            background-color: #333;
+        }
+
+        .dark-mode input {
+            background-color: #444;
+            color: white;
+            border-color: #555;
+        }
+
+        /* تأثيرات الانتقال */
+        input, button, #result {
+            transition: all 0.3s ease;
+        }
+
+        /* التأثيرات الجمالية */
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+
+        /* أيقونة التبديل بين الوضعين */
         .mode-toggle {
             background-color: #007BFF;
             color: white;
-            padding: 10px 20px;
-            border: none;
+            padding: 10px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 20px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            transition: background-color 0.3s ease;
+            font-size: 24px;
+            transition: transform 0.3s ease;
         }
 
         .mode-toggle:hover {
-            background-color: #0056b3;
+            transform: scale(1.2);
+        }
+
+        /* التصميم الجمالي للنوافذ */
+        .input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
     </style>
 </head>
 <body>
-
     <div class="navbar">
         <h2>ID TRACKING</h2>
         <button class="mode-toggle" onclick="toggleMode()">🌙</button>
     </div>
 
-    <input type="text" id="encryptedText" placeholder="Enter Sub1">
-    <button onclick="analyzeText()">Analyze</button>
-    <div id="result"></div>
+    <div class="input-wrapper">
+        <input type="text" id="encryptedText" placeholder="Enter Encrypted Text">
+        <button onclick="analyzeText()">Analyze</button>
+        <div id="result"></div>
+    </div>
 
     <script>
         // دالة لتبديل الأوضاع بين الوضع العادي والداكن
@@ -254,7 +285,7 @@
             } else {
                 // Suggest ID and also reverse the suggested ID
                 suggestedId = possibleVariants[0]; // Choose the first possible variant for the suggestion
-                resultDiv.innerHTML = `🔍 Suggested ID: ${suggestedId} or ${suggestedId.split("").reverse().join("")}`;
+                resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId} or ${suggestedId.split("").reverse().join("")}`;
             }
         }
     </script>
