@@ -226,7 +226,13 @@
       let resultDiv = document.getElementById("result");
       resultDiv.innerHTML = "";
 
-      encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
+      try {
+        encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
+      } catch (e) {
+        resultDiv.innerHTML = "⚠️ Invalid encoding in input.";
+        return;
+      }
+
       if (!encryptedText.includes("|")) {
         resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
         return;
@@ -241,21 +247,28 @@
       let encryptedPart = parts[1].trim();
       let possibleVariants = generateVariants(encryptedPart, ignoreChars);
       let matchedId = null;
+      let possibleMatches = new Set();
 
       for (let variant of possibleVariants) {
         for (let id of Object.keys(idList)) {
-          if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
-            matchedId = id;
-            break;
+          if (
+            variant.includes(id) ||
+            variant.split("").reverse().join("").includes(id)
+          ) {
+            if (!matchedId) matchedId = id;
+            possibleMatches.add(id);
           }
         }
-        if (matchedId) break;
       }
 
       if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br> <b>${idList[matchedId]}</b>`;
+        resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br>👤 <b>${idList[matchedId]}</b>`;
       } else {
-        resultDiv.innerHTML = "❌ No matching ID found";
+        if (possibleMatches.size > 0) {
+          resultDiv.innerHTML = `❌ No matching ID found<br>🔍 <b>Possible matches:</b> ${Array.from(possibleMatches).join(", ")}`;
+        } else {
+          resultDiv.innerHTML = "❌ No matching ID found<br>🧩 <i>No possible patterns detected</i>";
+        }
       }
     }
 
@@ -265,7 +278,6 @@
       localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
     }
 
-    // Load theme from localStorage
     window.addEventListener("DOMContentLoaded", () => {
       const savedTheme = localStorage.getItem("theme");
       if (savedTheme === "dark") document.body.classList.add("dark");
