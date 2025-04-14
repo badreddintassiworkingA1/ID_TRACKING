@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,18 +138,13 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
       word-wrap: break-word;
     }
-
-    .suggestion {
-      color: var(--primary);
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
 
   <div class="navbar">
     <div>ID TRACKING</div>
-    <button class="toggle-btn" onclick="toggleTheme()">🌙-🌞</button>
+    <button class="toggle-btn" onclick="toggleTheme()">🌙-🌞 </button>
   </div>
 
   <div class="container">
@@ -167,27 +161,99 @@
       "18e": "Badreddine Tassi",
       "0re": "Youssef Temsamani-Nya",
       "10y": "Abderrahman Jabili",
-      // ...
+      "187": "Zakariae Ben Zouynah",
+      "17a": "Badreddine Mzouri",
+      "19h": "Oumaima El Alami",
+      "1et": "Rayane Bensalah",
+      "18d": "Hamza Douch",
+      "17j": "Farouk Sedqi",
+      "0zw": "Shaimae Zerouali",
+      "1d2": "Lamiaee Mai",
+      "1bl": "naoufal Rouas",
+      "0yq": "Asmae Cherkaoui",
+      "0yn": "Zahra Mghait",
+      "1f0": "Khadija El Heddari",
+      "0vo": "Somaia Ghoddani",
+      "1bx": "Mohammed Zaaj",
+      "0xh": "Abderrahime Lemmtouni Chouiakh",
+      "1dn": "Amina Belhaj",
+      "1ai": "Ikram Elyoussoufy",
+      "0z5": "Ayoub Azbakh",
+      "1i9": "Hamza Douch id:2",
+      "1bw": "Mariam Rossi El Hassani",
+      "14o": "Hamza Bakkali",
+      "13d": "Bilal chouati",
+      "0v2": "anas ed-derghami",
+      "18b": "Ismail smaini",
+      "1by": "Adil Agbalu",
+      "1hj": "insaf bouzam",
+      "1d4": "Nihad Akrimel"
     };
 
+    function generateVariants(text, ignoreChars) {
+      let variants = new Set();
+
+      function removeOneCharPerIgnore(textArr, i = 0) {
+        if (i >= ignoreChars.length) {
+          variants.add(textArr.join(""));
+          return;
+        }
+
+        let char = ignoreChars[i];
+        let indexes = [];
+
+        textArr.forEach((c, idx) => {
+          if (c === char) indexes.push(idx);
+        });
+
+        if (indexes.length === 0) {
+          removeOneCharPerIgnore(textArr, i + 1);
+        } else {
+          for (let idx of indexes) {
+            let newArr = [...textArr];
+            newArr.splice(idx, 1);
+            removeOneCharPerIgnore(newArr, i + 1);
+          }
+        }
+      }
+
+      removeOneCharPerIgnore([...text], 0);
+      return Array.from(variants);
+    }
+
+    function extractPossibleIds(text) {
+      let possibleIds = new Set();
+      for (let i = 0; i < text.length - 2; i++) {
+        let candidate = text.substring(i, i + 3);
+        if (/^[a-z0-9]{3}$/i.test(candidate)) {
+          possibleIds.add(candidate);
+        }
+      }
+      return Array.from(possibleIds);
+    }
+
     function analyzeText() {
-      const encryptedText = document.getElementById("encryptedText").value.trim();
-      const resultDiv = document.getElementById("result");
+      let encryptedText = document.getElementById("encryptedText").value.trim();
+      let resultDiv = document.getElementById("result");
       resultDiv.innerHTML = "";
 
-      let decoded = decodeURIComponent(decodeURIComponent(encryptedText));
-      const parts = decoded.split("|");
-
-      if (parts.length < 2) {
-        resultDiv.innerHTML = "⚠️ Invalid encrypted text";
+      encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
+      if (!encryptedText.includes("|")) {
+        resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
         return;
       }
 
-      const subid = parts[1];
-      const variants = generateVariants(subid, ignoreChars);
+      let parts = encryptedText.split("|");
+      if (parts.length < 2) {
+        resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
+        return;
+      }
+
+      let encryptedPart = parts[1].trim();
+      let possibleVariants = generateVariants(encryptedPart, ignoreChars);
       let matchedId = null;
 
-      for (let variant of variants) {
+      for (let variant of possibleVariants) {
         for (let id of Object.keys(idList)) {
           if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
             matchedId = id;
@@ -198,55 +264,21 @@
       }
 
       if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br>👤 <b>${idList[matchedId]}</b>`;
+        resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br> <b>${idList[matchedId]}</b>`;
       } else {
-        // Generate 3-character possibilities as suggestions
-        const cleaned = subid.split("").filter(c => !ignoreChars.includes(c)).join("");
-        let suggestions = new Set();
-        for (let i = 0; i < cleaned.length - 2; i++) {
-          suggestions.add(cleaned.substr(i, 3));
-        }
-
-        resultDiv.innerHTML = `❌ No matching ID found<br><br>
-        🔍 <b>Suggestions:</b><br>
-        <div class="suggestion">${Array.from(suggestions).join(" &bull; ")}</div>`;
+        let guessedIds = extractPossibleIds(encryptedPart);
+        resultDiv.innerHTML = `
+          ❌ No matching ID found.<br>
+          🔎 <b>Suggested possible IDs:</b><br>
+          ${guessedIds.slice(0, 10).join(" – ")}
+        `;
       }
-    }
-
-    function generateVariants(text, ignoreChars) {
-      let result = new Set();
-
-      function recurse(arr, index = 0) {
-        if (index === ignoreChars.length) {
-          result.add(arr.join(""));
-          return;
-        }
-
-        let char = ignoreChars[index];
-        let positions = [];
-
-        arr.forEach((c, i) => {
-          if (c === char) positions.push(i);
-        });
-
-        if (positions.length === 0) {
-          recurse(arr, index + 1);
-        } else {
-          for (let i of positions) {
-            let copy = [...arr];
-            copy.splice(i, 1);
-            recurse(copy, index + 1);
-          }
-        }
-      }
-
-      recurse([...text]);
-      return Array.from(result);
     }
 
     function toggleTheme() {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+      const body = document.body;
+      body.classList.toggle("dark");
+      localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
     }
 
     window.addEventListener("DOMContentLoaded", () => {
