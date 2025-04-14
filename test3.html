@@ -61,14 +61,7 @@
             encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
             console.log("Decrypted text: ", encryptedText);
 
-            let separator = encryptedText.includes("|") ? "|" : "%7C";
-
-            if (!encryptedText.includes(separator)) {
-                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
-                return;
-            }
-
-            let parts = encryptedText.split(separator);
+            let parts = encryptedText.includes("|") ? encryptedText.split("|") : encryptedText.split("%7C");
             if (parts.length < 2) {
                 resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
                 return;
@@ -110,15 +103,12 @@
                 "1d4": "Nihad Akrimel"
             };
 
-            let suggestedId = Object.keys(idList).find(id => remainingChars.includes(id));
+            let suggestedId = Object.keys(idList).find(id => remainingChars.includes(id) || remainingChars.split("").reverse().join("").includes(id));
 
             if (suggestedId && idList[suggestedId]) {
                 resultDiv.innerHTML = `✅ Matching ID: ${suggestedId} (${idList[suggestedId]})`;
-            } else {
-                resultDiv.innerHTML = "❌ No matching ID found";
-                if (suggestedId) {
-                    resultDiv.innerHTML += `<br>🔍 Suggested ID: ${suggestedId}`;
-                }
+            } else if (suggestedId) {
+                resultDiv.innerHTML = `🔍 Suggested ID: ${suggestedId}`;
             }
         }
     </script>
