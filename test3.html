@@ -5,33 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID TRACKING</title>
     <style>
+        /* الوضع العادي (Light Mode) */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 50px;
             background-color: #f4f4f4;
             padding-top: 80px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        input {
+        input, button {
             margin: 10px;
             padding: 10px;
             width: 60%;
             max-width: 400px;
-            border: 2px solid #007BFF;
             border-radius: 5px;
             font-size: 16px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 16px;
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
 
         button:hover {
@@ -42,12 +40,12 @@
             margin-top: 20px;
             font-weight: bold;
             font-size: 18px;
-            color: #333;
             background: white;
             display: inline-block;
             padding: 10px 20px;
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #333;
         }
 
         .navbar {
@@ -79,16 +77,76 @@
         .navbar a:hover {
             background: #0056b3;
         }
+
+        /* الوضع الداكن (Dark Mode) */
+        body.dark-mode {
+            background-color: #333;
+            color: white;
+        }
+
+        input.dark-mode, button.dark-mode {
+            background-color: #555;
+            color: white;
+            border: 2px solid #444;
+        }
+
+        button.dark-mode:hover {
+            background-color: #444;
+        }
+
+        #result.dark-mode {
+            background-color: #444;
+            color: white;
+        }
+
+        /* أيقونة التبديل بين الأوضاع */
+        .mode-toggle {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .mode-toggle:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
 
-    <h2>ID TRACKING</h2>
+    <div class="navbar">
+        <h2>ID TRACKING</h2>
+        <button class="mode-toggle" onclick="toggleMode()">🌙</button>
+    </div>
+
     <input type="text" id="encryptedText" placeholder="Enter Sub1">
     <button onclick="analyzeText()">Analyze</button>
     <div id="result"></div>
 
     <script>
+        // دالة لتبديل الأوضاع بين الوضع العادي والداكن
+        function toggleMode() {
+            document.body.classList.toggle("dark-mode");
+            let elements = document.querySelectorAll("input, button");
+            elements.forEach(el => el.classList.toggle("dark-mode"));
+            document.getElementById("result").classList.toggle("dark-mode");
+
+            let modeButton = document.querySelector(".mode-toggle");
+            if (document.body.classList.contains("dark-mode")) {
+                modeButton.innerHTML = "🌞"; // تغيير الأيقونة إلى الشمس
+            } else {
+                modeButton.innerHTML = "🌙"; // العودة إلى أيقونة القمر
+            }
+        }
+
         function generateVariants(text, ignoreChars) {
             let variants = new Set();
 
