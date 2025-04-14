@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID TRACKING</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+            padding-top: 80px;
+        }
+
+        input {
+            margin: 10px;
+            padding: 10px;
+            width: 60%;
+            max-width: 400px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            background: white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            background: #007bff;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>ID TRACKING</h2>
+    <input type="text" id="encryptedText" placeholder="Enter Sub1">
+    <button onclick="analyzeText()">Analyze</button>
+    <div id="result"></div>
+
+    <script>
+        function generateVariants(text, ignoreChars) {
+            let variants = new Set();
+
+            // إزالة الأحرف المحددة من النص
+            function removeIgnoreChars(textArr) {
+                return textArr.filter(c => !ignoreChars.includes(c));
+            }
+
+            // دالة لتوليد الاحتمالات بناءً على الحروف المكررة
+            function generateWithRepeatedChars(textArr, char) {
+                let charIndexes = [];
+                textArr.forEach((c, idx) => {
+                    if (c === char) charIndexes.push(idx);
+                });
+
+                if (charIndexes.length >= 2) {
+                    // حذف الحرف من المكان الأول
+                    let newArr1 = [...textArr];
+                    newArr1.splice(charIndexes[0], 1);
+                    variants.add(newArr1.join(""));
+
+                    // حذف الحرف من المكان الثاني
+                    let newArr2 = [...textArr];
+                    newArr2.splice(charIndexes[1], 1);
+                    variants.add(newArr2.join(""));
+
+                    // استرجاع الحرف المحذوف وإزالة الحرف من أماكن أخرى
+                    let newArr3 = [...textArr];
+                    newArr3.splice(charIndexes[0], 1);
+                    newArr3.push(char);
+                    variants.add(newArr3.join(""));
+
+                    let newArr4 = [...textArr];
+                    newArr4.splice(charIndexes[1], 1);
+                    newArr4.unshift(char);
+                    variants.add(newArr4.join(""));
+                } else {
+                    variants.add(textArr.join(""));
+                }
+            }
+
+            // فحص الحروف المحذوفة
+            function removeOneCharPerIgnore(textArr, i = 0) {
+                if (i >= ignoreChars.length) {
+                    // إذا تم إزالة جميع الحروف المحذوفة
+                    let uniqueTextArr = removeIgnoreChars(textArr);
+                    variants.add(uniqueTextArr.join(""));
+                    return;
+                }
+
+                let char = ignoreChars[i];
+                let charIndexes = [];
+
+                textArr.forEach((c, idx) => {
+                    if (c === char) {
+                        charIndexes.push(idx);
+                    }
+                });
+
+                if (charIndexes.length > 0) {
+                    generateWithRepeatedChars(textArr, char);
+                } else {
+                    // استمر مع الحروف التالية
+                    removeOneCharPerIgnore(textArr, i + 1);
+                }
+            }
+
+            // بدأ التحليل
+            removeOneCharPerIgnore([...text], 0);
+            return Array.from(variants);
+        }
+
+        function analyzeText() {
+            let encryptedText = document.getElementById("encryptedText").value.trim();
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
+
+            encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
+
+            if (!encryptedText.includes("|")) {
+                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+                return;
+            }
+
+            let parts = encryptedText.split("|");
+            if (parts.length < 2) {
+                resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
+                return;
+            }
+
+            let encryptedPart = parts[1].trim(); 
+            let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
+
+            let possibleVariants = generateVariants(encryptedPart, ignoreChars);
+
+            resultDiv.innerHTML = `Possible variants: ${possibleVariants.join(", ")}`;
+        }
+    </script>
+</body>
+</html>
