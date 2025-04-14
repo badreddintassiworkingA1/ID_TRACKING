@@ -1,92 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Decryption Analysis</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; padding: 50px; }
-    input, button {
-      padding: 10px; font-size: 16px; border-radius: 5px; margin: 10px;
-      border: 2px solid #007BFF; width: 60%; max-width: 400px;
-    }
-    button { background: #007BFF; color: #fff; cursor: pointer; }
-    button:hover { background: #0056b3; }
-    #result {
-      margin-top: 20px; font-size: 18px; background: #fff; display: inline-block;
-      padding: 10px 20px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decryption Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        input {
+            margin: 10px;
+            padding: 10px;
+            width: 60%;
+            max-width: 400px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            background: white;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
-  <h2>Decryption Analysis</h2>
-  <input type="text" id="encryptedText" placeholder="Enter encrypted text">
-  <button onclick="analyzeText()">Analyze</button>
-  <div id="result"></div>
+    <h2>Decryption Analysis</h2>
+    <input type="text" id="encryptedText" placeholder="Enter encrypted text">
+    <button onclick="analyzeText()">Analyze</button>
+    <div id="result"></div>
 
-  <script>
-    function analyzeText() {
-      const input = document.getElementById("encryptedText").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
+    <script>
+        function analyzeText() {
+            let encryptedText = document.getElementById("encryptedText").value.trim();
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
 
-      let separator = "|";
-      if (input.includes("%7C")) separator = "%7C";
-      if (!input.includes(separator)) {
-        resultDiv.innerHTML = "⚠️ Please enter a valid format with '|' or '%7C'";
-        return;
-      }
+            encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
+            console.log("Decrypted text: ", encryptedText);
 
-      const parts = input.split(separator);
-      if (parts.length < 2) {
-        resultDiv.innerHTML = "⚠️ Incomplete input";
-        return;
-      }
+            let separator = encryptedText.includes("|") ? "|" : "%7C";
 
-      const subid = parts[1].trim();
-      const ignoreOnce = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
-      const usedIgnore = new Set();
-      let filtered = [];
+            if (!encryptedText.includes(separator)) {
+                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+                return;
+            }
 
-      for (const char of subid) {
-        if (ignoreOnce.includes(char) && !usedIgnore.has(char)) {
-          usedIgnore.add(char);
-        } else {
-          filtered.push(char);
+            let parts = encryptedText.split(separator);
+            if (parts.length < 2) {
+                resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
+                return;
+            }
+
+            let encryptedPart = parts[1].trim(); 
+            let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
+            let filteredChars = encryptedPart.split("");
+
+            for (let char of ignoreChars) {
+                let index = filteredChars.indexOf(char);
+                if (index !== -1) {
+                    filteredChars.splice(index, 1); // Remove the character once
+                }
+            }
+
+            let remainingChars = filteredChars.join("");
+            console.log("Remaining characters: ", remainingChars);
+
+            const idList = {
+                "18e": "Badreddine Tassi",
+                "10y": "Abderrahman Jabili",
+                "187": "Zakariae Ben Zouynah",
+                "17a": "Badreddine Mzouri",
+                "19h": "Oumaima El Alami",
+                "1et": "Rayane Bensalah",
+                "1ai": "Rayane Bensalah 2",
+                "1gg": "Hamza Douch",
+                "18d": "Hamza Douch 2",
+                "17j": "Farouk Sedqi",
+                "0zw": "Shaimae Zerouali",
+                "1d2": "Lamiaee Mai",
+                "1bl": "Naoufal",
+                "0yq": "Asmae Cherkaoui",
+                "0yn": "Zahra Mghait",
+                "1f0": "Khadija El Heddari",
+                "0vo": "Somaia Ghoddani",
+                "0xh": "Abderrahime Lemmtouni Chouiakh",
+                "1d4": "Nihad Akrimel"
+            };
+
+            let suggestedId = Object.keys(idList).find(id => remainingChars.includes(id));
+
+            if (suggestedId && idList[suggestedId]) {
+                resultDiv.innerHTML = `✅ Matching ID: ${suggestedId} (${idList[suggestedId]})`;
+            } else {
+                resultDiv.innerHTML = "❌ No matching ID found";
+                if (suggestedId) {
+                    resultDiv.innerHTML += `<br>🔍 Suggested ID: ${suggestedId}`;
+                }
+            }
         }
-      }
-
-      const suggestion = filtered.slice(0, 3).join("");
-
-      const idList = {
-        "18e": "Badreddine Tassi",
-        "10y": "Abderrahman Jabili",
-        "187": "Zakariae Ben Zouynah",
-        "17a": "Badreddine Mzouri",
-        "19h": "Oumaima El Alami",
-        "1et": "Rayane Bensalah",
-        "1ai": "Rayane Bensalah 2",
-        "1gg": "Hamza Douch",
-        "18d": "Hamza Douch 2",
-        "17j": "Farouk Sedqi",
-        "0zw": "Shaimae Zerouali",
-        "1d2": "Lamiaee Mai",
-        "1bl": "Naoufal",
-        "0yq": "Asmae Cherkaoui",
-        "0yn": "Zahra Mghait",
-        "1f0": "Khadija El Heddari",
-        "0vo": "Somaia Ghoddani",
-        "0xh": "Abderrahime Lemmtouni Chouiakh",
-        "1d4": "Nihad Akrimel"
-      };
-
-      // Check for match
-      const matchedId = Object.keys(idList).find(id => subid.includes(id));
-      if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
-      } else {
-        resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: <b>${suggestion}</b>`;
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
