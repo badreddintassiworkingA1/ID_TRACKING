@@ -1,266 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ID Tracking</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>ID Matching Tool</title>
   <style>
-    :root {
-      --bg-color: #f0f4ff;
-      --card-bg: #ffffff;
-      --text-color: #333;
-      --primary: #1e3a8a;
-      --highlight: #f1f5ff;
-      --border-color: #e0e7ff;
-    }
-
-    body.dark {
-      --bg-color: #111827;
-      --card-bg: #1f2937;
-      --text-color: #f3f4f6;
-      --primary: #60a5fa;
-      --highlight: #374151;
-      --border-color: #4b5563;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 100px;
-      transition: background 0.3s ease, color 0.3s ease;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
     }
-
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 65px;
-      background-color: var(--primary);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      font-size: 22px;
-      font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-      letter-spacing: 0.5px;
-      z-index: 1000;
-    }
-
-    .toggle-btn {
-      background: none;
-      border: 2px solid white;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    .toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: scale(1.05);
-    }
-
-    .container {
-      background: var(--card-bg);
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
-      width: 90%;
-      max-width: 550px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    h2 {
-      color: var(--primary);
-      font-size: 26px;
-      margin-bottom: 25px;
-      font-weight: 600;
-    }
-
-    input[type="text"] {
+    textarea {
       width: 100%;
-      padding: 15px;
-      border: 2px solid var(--border-color);
-      border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 25px;
-      background: var(--card-bg);
-      color: var(--text-color);
+      height: 100px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      padding: 10px;
     }
-
-    input[type="text"]:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 8px rgba(30, 58, 138, 0.1);
-      outline: none;
-    }
-
     button {
-      background: var(--primary);
+      padding: 10px 20px;
+      background: #007BFF;
       color: white;
-      padding: 14px 28px;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 500;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s ease;
+      font-weight: bold;
     }
-
-    button:hover {
-      filter: brightness(1.1);
-      transform: scale(1.03);
-    }
-
-    #result {
-      margin-top: 30px;
-      font-size: 18px;
-      background-color: var(--highlight);
-      padding: 18px 22px;
-      border-left: 6px solid var(--primary);
-      border-radius: 12px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
-      word-wrap: break-word;
+    .output {
+      margin-top: 15px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-
-  <div class="navbar">
-    <div>ID TRACKING</div>
-    <button class="toggle-btn" onclick="toggleTheme()">🌙-🌞 </button>
-  </div>
-
-  <div class="container">
-    <h2>Sub1 Decoder</h2>
-    <input type="text" id="encryptedText" placeholder="Paste your Sub1 here">
-    <button onclick="analyzeText()">Analyze</button>
-    <div id="result"></div>
-  </div>
+  <h2>ID Checker</h2>
+  <textarea id="inputText" placeholder="Enter your code..."></textarea>
+  <button onclick="processInput()">Check</button>
+  <div class="output" id="outputArea"></div>
 
   <script>
-    const ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
-
+    // قائمة ID مع الأسماء
     const idList = {
       "18e": "Badreddine Tassi",
-      "0re": "Youssef Temsamani-Nya",
-      "10y": "Abderrahman Jabili",
-      "187": "Zakariae Ben Zouynah",
-      "17a": "Badreddine Mzouri",
-      "19h": "Oumaima El Alami",
-      "1et": "Rayane Bensalah",
-      "18d": "Hamza Douch",
-      "17j": "Farouk Sedqi",
-      "0zw": "Shaimae Zerouali",
-      "1d2": "Lamiaee Mai",
-      "1bl": "naoufal Rouas",
-      "0yq": "Asmae Cherkaoui",
-      "0yn": "Zahra Mghait",
-      "1f0": "Khadija El Heddari",
-      "0vo": "Somaia Ghoddani",
-      "1bx": "Mohammed Zaaj",
-      "0xh": "Abderrahime Lemmtouni Chouiakh",
-      "1dn": "Amina Belhaj",
-      "1ai": "Ikram Elyoussoufy",
-      "0z5": "Ayoub Azbakh",
-      "1i9": "Hamza Douch id:2",
-      "1bw": "Mariam Rossi El Hassani",
-      "14o": "Hamza Bakkali",
-      "13d": "Bilal chouati",
-      "0v2": "anas ed-derghami",
-      "18b": "Ismail smaini",
-      "1by": "Adil Agbalu",
-      "1hj": "insaf bouzam",
-      "1d4": "Nihad Akrimel"
+      "7i1": "Example User 1",
+      "71i": "Example User 2",
+      "i17": "Example User 3",
+      "1i7": "Example User 4"
     };
 
-    function generateVariants(text, ignoreChars) {
-      let variants = new Set();
+   const charsToRemove = ["a", "u", "g", "p", "m", "s", "c", "d", "r"]; // بدون i و l
 
-      function removeOneCharPerIgnore(textArr, i = 0) {
-        if (i >= ignoreChars.length) {
-          variants.add(textArr.join("")); // تم جمع النتيجة
-          return;
-        }
+function processInput() {
+  const input = document.getElementById("inputText").value.trim();
+  const output = document.getElementById("outputArea");
+  output.innerHTML = "";
 
-        let char = ignoreChars[i];
-        let indexes = [];
+  if (!input) {
+    output.textContent = "Please enter a code.";
+    return;
+  }
 
-        textArr.forEach((c, idx) => {
-          if (c === char) indexes.push(idx);
-        });
+  const delimiter = input.includes("%7C") ? "%7C" : "|";
+  const parts = input.split(delimiter);
 
-        if (indexes.length === 0) {
-          removeOneCharPerIgnore(textArr, i + 1);
-        } else {
-          for (let idx of indexes) {
-            let newArr = [...textArr];
-            newArr.splice(idx, 1); // حذف الحرف
-            removeOneCharPerIgnore(newArr, i + 1);
-          }
-        }
+  if (parts.length !== 3) {
+    output.textContent = "Invalid format. Expecting 3 parts.";
+    return;
+  }
+
+  const subid = parts[1];
+  let matchFound = false;
+
+  for (const id in idList) {
+    if (subid.includes(id)) {
+      output.innerHTML = `✅ Matching ID: <b>${id}</b> (${idList[id]})`;
+      matchFound = true;
+      break;
+    }
+  }
+
+  if (!matchFound) {
+    const cleaned = subid
+      .split("")
+      .filter(char => !charsToRemove.includes(char))
+      .join("");
+
+    const suggestions = new Set();
+
+    for (let i = 0; i < cleaned.length - 2; i++) {
+      const candidate = cleaned.slice(i, i + 3);
+      if (candidate.length === 3 && idList[candidate]) {
+        suggestions.add(candidate);
       }
-
-      removeOneCharPerIgnore([...text], 0);
-      return Array.from(variants);
     }
 
-    function extractPossibleIds(text) {
-      let possibleIds = new Set();
-      for (let i = 0; i < text.length - 2; i++) {
-        let candidate = text.substring(i, i + 3);
-        if (/^[a-z0-9]{3}$/i.test(candidate)) {
-          possibleIds.add(candidate);
-        }
-      }
-      return Array.from(possibleIds);
-    }
+    const uniqueSuggestions = [...suggestions];
+    output.innerHTML = uniqueSuggestions.length
+      ? `🔎 <b>Suggested possible IDs:</b> ${uniqueSuggestions.join(", ")}`
+      : "🔎 <b>Suggested possible IDs:</b> None";
+  }
+}
 
-    function analyzeText() {
-      let text = document.getElementById("encryptedText").value;
-      let resultDiv = document.getElementById("result");
 
-      if (!text.trim()) {
-        resultDiv.innerHTML = "Please enter a valid Sub1.";
-        return;
-      }
-
-      let variants = generateVariants(text, ignoreChars);
-      let possibleIds = extractPossibleIds(text);
-
-      let result = `
-        <p><strong>Generated Variants:</strong></p>
-        <ul>
-          ${variants.map(v => `<li>${v}</li>`).join("")}
-        </ul>
-        <p><strong>Possible IDs:</strong></p>
-        <ul>
-          ${possibleIds.map(v => `<li>${v}</li>`).join("")}
-        </ul>
-      `;
-      resultDiv.innerHTML = result;
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle('dark');
-    }
   </script>
-
 </body>
 </html>
