@@ -195,7 +195,7 @@
 
       function removeOneCharPerIgnore(textArr, i = 0) {
         if (i >= ignoreChars.length) {
-          variants.add(textArr.join(""));
+          variants.add(textArr.join("")); // تم جمع النتيجة
           return;
         }
 
@@ -211,7 +211,7 @@
         } else {
           for (let idx of indexes) {
             let newArr = [...textArr];
-            newArr.splice(idx, 1);
+            newArr.splice(idx, 1); // حذف الحرف
             removeOneCharPerIgnore(newArr, i + 1);
           }
         }
@@ -233,58 +233,34 @@
     }
 
     function analyzeText() {
-      let encryptedText = document.getElementById("encryptedText").value.trim();
+      let text = document.getElementById("encryptedText").value;
       let resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
 
-      encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
-      if (!encryptedText.includes("|")) {
-        resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+      if (!text.trim()) {
+        resultDiv.innerHTML = "Please enter a valid Sub1.";
         return;
       }
 
-      let parts = encryptedText.split("|");
-      if (parts.length < 2) {
-        resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
-        return;
-      }
+      let variants = generateVariants(text, ignoreChars);
+      let possibleIds = extractPossibleIds(text);
 
-      let encryptedPart = parts[1].trim();
-      let possibleVariants = generateVariants(encryptedPart, ignoreChars);
-      let matchedId = null;
-
-      for (let variant of possibleVariants) {
-        for (let id of Object.keys(idList)) {
-          if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
-            matchedId = id;
-            break;
-          }
-        }
-        if (matchedId) break;
-      }
-
-      if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: <b>${matchedId}</b><br>👤 <b>${idList[matchedId]}</b>`;
-      } else {
-        let guessedIds = extractPossibleIds(encryptedPart);
-        resultDiv.innerHTML = `
-          ❌ No matching ID found.<br>
-          🔎 <b>Suggested possible IDs:</b><br>
-          ${guessedIds.slice(0, 10).join(" – ")}
-        `;
-      }
+      let result = `
+        <p><strong>Generated Variants:</strong></p>
+        <ul>
+          ${variants.map(v => `<li>${v}</li>`).join("")}
+        </ul>
+        <p><strong>Possible IDs:</strong></p>
+        <ul>
+          ${possibleIds.map(v => `<li>${v}</li>`).join("")}
+        </ul>
+      `;
+      resultDiv.innerHTML = result;
     }
 
     function toggleTheme() {
-      const body = document.body;
-      body.classList.toggle("dark");
-      localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
+      document.body.classList.toggle('dark');
     }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme === "dark") document.body.classList.add("dark");
-    });
   </script>
+
 </body>
 </html>
