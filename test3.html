@@ -179,6 +179,7 @@
             };
 
             let matchedId = null;
+            let suggestedId = null;
 
             for (let variant of possibleVariants) {
                 for (let id of Object.keys(idList)) {
@@ -193,9 +194,9 @@
             if (matchedId) {
                 resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
             } else {
-                // Suggesting a potential ID based on remaining characters
-                let suggestedId = possibleVariants[0].slice(0, 3); // For example, the first 3 characters as the suggestion.
-                resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId}`;
+                // Suggest ID and also reverse the suggested ID
+                suggestedId = possibleVariants[0]; // Choose the first possible variant for the suggestion
+                resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId} or ${suggestedId.split("").reverse().join("")}`;
             }
         }
     </script>
