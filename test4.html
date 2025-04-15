@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID TRACKING</title>
-  <style>
+ <style>
   :root {
     --bg-color: #f0f4ff;
     --card-bg: #ffffff;
@@ -40,6 +40,7 @@
     align-items: center;
     padding-top: 100px;
     transition: background 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
   }
 
   .navbar {
@@ -47,7 +48,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 65px;
     background-color: var(--primary);
     color: white;
     display: flex;
@@ -56,8 +57,14 @@
     padding: 0 20px;
     font-size: 20px;
     font-weight: 600;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .navbar .title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
   }
 
   .toggle-btn {
@@ -145,11 +152,12 @@
   }
 </style>
 
+
 </head>
 <body>
     <div class="navbar">
         <h2>ID TRACKING</h2>
-        <button class="mode-toggle" onclick="toggleMode()">🌙</button>
+<button class="toggle-btn" onclick="toggleTheme()">🌙</button>
     </div>
 
     <div class="input-wrapper">
@@ -159,20 +167,34 @@
     </div>
 
     <script>
-        // دالة لتبديل الأوضاع بين الوضع العادي والداكن
-        function toggleMode() {
-            document.body.classList.toggle("dark-mode");
-            let elements = document.querySelectorAll("input, button");
-            elements.forEach(el => el.classList.toggle("dark-mode"));
-            document.getElementById("result").classList.toggle("dark-mode");
+  const modeButton = document.querySelector(".toggle-btn");
 
-            let modeButton = document.querySelector(".mode-toggle");
-            if (document.body.classList.contains("dark-mode")) {
-                modeButton.innerHTML = "🌞"; // تغيير الأيقونة إلى الشمس
-            } else {
-                modeButton.innerHTML = "🌙"; // العودة إلى أيقونة القمر
-            }
-        }
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+
+    // حفظ الوضع في التخزين المحلي
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    // تغيير الأيقونة حسب الوضع
+    modeButton.innerHTML = isDark ? "🌞" : "🌙";
+  }
+
+  // عند تحميل الصفحة
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme");
+    const isDark = savedTheme === "dark";
+    
+    if (isDark) {
+      document.body.classList.add("dark");
+    }
+
+    // تعيين الأيقونة عند التحميل
+    const modeButton = document.querySelector(".toggle-btn");
+    if (modeButton) {
+      modeButton.innerHTML = isDark ? "🌞" : "🌙";
+    }
+  });
 
         function generateVariants(text, ignoreChars) {
             let variants = new Set();
