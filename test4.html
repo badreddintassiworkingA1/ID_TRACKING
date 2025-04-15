@@ -307,6 +307,21 @@
                 resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId} or ${suggestedId.split("").reverse().join("")}`;
             }
         }
+          document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  // تعطيل F12 و Ctrl+Shift+I و Ctrl+U و Ctrl+S
+  document.addEventListener('keydown', function(e) {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+      (e.ctrlKey && (e.key === "U" || e.key === "S"))
+    ) {
+      e.preventDefault();
+    }
+  });
+
     </script>
 </body>
 </html>
