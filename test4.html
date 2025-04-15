@@ -1,175 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID TRACKING</title>
- <style>
-  :root {
-    --bg-color: #f0f4ff;
-    --card-bg: #ffffff;
-    --text-color: #333;
-    --primary: #1e3a8a;
-    --highlight: #f1f5ff;
-    --border-color: #e0e7ff;
-    --shadow-color: rgba(0, 0, 0, 0.08);
-  }
-
-  body.dark {
-    --bg-color: #111827;
-    --card-bg: #1f2937;
-    --text-color: #f3f4f6;
-    --primary: #60a5fa;
-    --highlight: #1f2937;
-    --border-color: #374151;
-    --shadow-color: rgba(255, 255, 255, 0.05);
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 100px;
-    transition: background 0.3s ease, color 0.3s ease;
-    min-height: 100vh;
-  }
-
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 65px;
-    background-color: var(--primary);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-size: 20px;
-    font-weight: 600;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  }
-
-  .navbar .title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
-
-  .toggle-btn {
-    background: none;
-    border: 2px solid white;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s, transform 0.2s;
-  }
-
-  .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(1.05);
-  }
-
-  h2 {
-    color: var(--primary);
-    font-size: 26px;
-    margin-bottom: 25px;
-    font-weight: 600;
-  }
-
-  input[type="text"] {
-    width: 90%;
-    max-width: 450px;
-    padding: 14px 16px;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    font-size: 16px;
-    margin-bottom: 25px;
-    background: var(--card-bg);
-    color: var(--text-color);
-    transition: border 0.3s ease;
-  }
-
-  input[type="text"]:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 8px rgba(30, 58, 138, 0.1);
-    outline: none;
-  }
-
-  button {
-    background: var(--primary);
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s ease;
-  }
-
-  button:hover {
-    filter: brightness(1.1);
-    transform: scale(1.03);
-  }
-
-  #result {
-    margin-top: 30px;
-    font-size: 17px;
-    background-color: var(--highlight);
-    padding: 20px 24px;
-    border-left: 6px solid var(--primary);
-    border-radius: 12px;
-    box-shadow: 0 6px 15px var(--shadow-color);
-    word-wrap: break-word;
-    line-height: 1.7;
-    text-align: left;
-    transition: all 0.3s ease;
-    max-width: 90%;
-    width: 500px;
-  }
-
-  #result strong {
-    color: var(--primary);
-    background: rgba(30, 58, 138, 0.08);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 16px;
-  }
-</style>
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ID Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f0f4ff;
+      --card-bg: #ffffff;
+      --text-color: #333;
+      --primary: #1e3a8a;
+      --highlight: #f1f5ff;
+      --border-color: #e0e7ff;
+      --shadow-color: rgba(0, 0, 0, 0.08);
+    }
+    body.dark {
+      --bg-color: #111827;
+      --card-bg: #1f2937;
+      --text-color: #f3f4f6;
+      --primary: #60a5fa;
+      --highlight: #1f2937;
+      --border-color: #374151;
+      --shadow-color: rgba(255, 255, 255, 0.05);
+    }
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 100px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 65px;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 20px;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+    .navbar .title {font-size: 22px; font-weight: 700;}
+    input, button {
+      padding: 10px;
+      margin: 6px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid var(--border-color);
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #login-form, #app {max-width: 600px; width: 100%; margin-top: 30px;}
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {background-color: var(--highlight);}
+    .hidden {display: none;}
+  </style>
 </head>
 <body>
-    <div class="navbar">
-<div class="title">🎯 ID TRACKING</div>
+  <div class="navbar">
+    <div class="title">⚙️ ID Admin Panel</div>
+  </div>
 
-<button class="toggle-btn" onclick="toggleTheme()">🌙</button>
-    </div>
+  <div id="login-form">
+    <h2>Admin Login</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <div id="login-error" style="color:red; margin-top:10px;"></div>
+  </div>
 
-    <div class="input-wrapper">
-        <input type="text" id="encryptedText" placeholder="Enter Encrypted Text">
-        <button onclick="analyzeText()">Analyze</button>
-        <div id="result"></div>
-    </div>
+  <div id="app" class="hidden">
+    <h2>Manage ID List</h2>
+    <input type="text" id="idInput" placeholder="Enter ID">
+    <input type="text" id="nameInput" placeholder="Enter Name">
+    <button onclick="addOrUpdateId()">Add/Update</button>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="idTable"></tbody>
+    </table>
+  </div>
 
-    <script>
-const _0x140ed3=_0x1308;(function(_0x5101b2,_0x3e46bb){const _0x289836=_0x1308,_0xc72937=_0x5101b2();while(!![]){try{const _0x425686=parseInt(_0x289836(0x129))/0x1*(-parseInt(_0x289836(0x123))/0x2)+-parseInt(_0x289836(0x11e))/0x3*(parseInt(_0x289836(0x11f))/0x4)+parseInt(_0x289836(0xf4))/0x5+parseInt(_0x289836(0xf5))/0x6+parseInt(_0x289836(0x100))/0x7+parseInt(_0x289836(0xfb))/0x8+parseInt(_0x289836(0xec))/0x9*(-parseInt(_0x289836(0x106))/0xa);if(_0x425686===_0x3e46bb)break;else _0xc72937['push'](_0xc72937['shift']());}catch(_0x541152){_0xc72937['push'](_0xc72937['shift']());}}}(_0x31ba,0x91d91));function _0x1308(_0x92a7b,_0x45051f){const _0x31ba97=_0x31ba();return _0x1308=function(_0x1308c5,_0x469250){_0x1308c5=_0x1308c5-0xe9;let _0xf2536a=_0x31ba97[_0x1308c5];return _0xf2536a;},_0x1308(_0x92a7b,_0x45051f);}const modeButton=document[_0x140ed3(0x118)]('.toggle-btn');function toggleTheme(){const _0x46cdf4=_0x140ed3;document[_0x46cdf4(0x117)]['classList'][_0x46cdf4(0x109)](_0x46cdf4(0x120));const _0x2f854d=document['body'][_0x46cdf4(0x11a)][_0x46cdf4(0x126)](_0x46cdf4(0x120));localStorage[_0x46cdf4(0x10e)](_0x46cdf4(0x103),_0x2f854d?_0x46cdf4(0x120):_0x46cdf4(0x112)),modeButton[_0x46cdf4(0xfd)]=_0x2f854d?'🌞':'🌙';}window[_0x140ed3(0xf8)](_0x140ed3(0xeb),()=>{const _0x50e631=_0x140ed3,_0x403ede=localStorage[_0x50e631(0xed)](_0x50e631(0x103)),_0x13b254=_0x403ede===_0x50e631(0x120);_0x13b254&&document[_0x50e631(0x117)][_0x50e631(0x11a)][_0x50e631(0xee)](_0x50e631(0x120));const _0x442e83=document[_0x50e631(0x118)](_0x50e631(0x10c));_0x442e83&&(_0x442e83[_0x50e631(0xfd)]=_0x13b254?'🌞':'🌙');});function generateVariants(_0x3a88b4,_0x173544){const _0x59dc9f=_0x140ed3;let _0xf7a0e9=new Set();function _0x31513b(_0x190c4e,_0x5d03f1=0x0){const _0x515a41=_0x1308;if(_0x5d03f1>=_0x173544[_0x515a41(0x127)]){_0xf7a0e9['add'](_0x190c4e[_0x515a41(0x122)](''));return;}let _0xe36a01=_0x173544[_0x5d03f1],_0x2a6988=[];_0x190c4e['forEach']((_0x3cabd1,_0x1ca9f9)=>{const _0x4f195c=_0x515a41;if(_0x3cabd1===_0xe36a01)_0x2a6988[_0x4f195c(0xff)](_0x1ca9f9);});if(_0x2a6988[_0x515a41(0x127)]===0x0)_0x31513b(_0x190c4e,_0x5d03f1+0x1);else for(let _0x27c32a of _0x2a6988){let _0x7a0a14=[..._0x190c4e];_0x7a0a14[_0x515a41(0xf0)](_0x27c32a,0x1),_0x31513b(_0x7a0a14,_0x5d03f1+0x1);}}return _0x31513b([..._0x3a88b4],0x0),Array[_0x59dc9f(0xf1)](_0xf7a0e9);}function analyzeText(){const _0x3e665e=_0x140ed3;let _0x51a69e=document[_0x3e665e(0xf2)]('encryptedText')[_0x3e665e(0x11d)][_0x3e665e(0xfc)](),_0x2a09cb=document[_0x3e665e(0xf2)](_0x3e665e(0x10d));_0x2a09cb[_0x3e665e(0xfd)]='',_0x51a69e=decodeURIComponent(decodeURIComponent(_0x51a69e)),console['log'](_0x3e665e(0x110),_0x51a69e);if(!_0x51a69e[_0x3e665e(0xfe)]('|')){_0x2a09cb[_0x3e665e(0xfd)]=_0x3e665e(0x115);return;}let _0x4ff2b3=_0x51a69e[_0x3e665e(0x125)]('|');if(_0x4ff2b3[_0x3e665e(0x127)]<0x2){_0x2a09cb[_0x3e665e(0xfd)]='⚠️\x20Incomplete\x20encrypted\x20text';return;}let _0x4afa78=_0x4ff2b3[0x1][_0x3e665e(0xfc)](),_0xed9c70=['l','r','a','u','g','p','m','s','c','d','i'],_0x2a486c=generateVariants(_0x4afa78,_0xed9c70),_0x1539c8={'18e':_0x3e665e(0x105),'0re':_0x3e665e(0xf6),'10y':'Abderrahman\x20Jabili','187':'Zakariae\x20Ben\x20Zouynah','17a':'Badreddine\x20Mzouri','19h':'Oumaima\x20El\x20Alami','1et':'Rayane\x20Bensalah','18d':_0x3e665e(0x111),'17j':_0x3e665e(0x119),'0zw':_0x3e665e(0x10f),'1d2':'Lamiaee\x20Mai','1bl':'naoufal\x20Rouas','0yq':'Asmae\x20Cherkaoui','0yn':'Zahra\x20Mghait','1f0':'Khadija\x20El\x20Heddari','0vo':_0x3e665e(0xef),'1bx':_0x3e665e(0x102),'0xh':'Abderrahime\x20Lemmtouni\x20Chouiakh','1dn':_0x3e665e(0x114),'1ai':_0x3e665e(0x124),'0z5':'Ayoub\x20Azbakh','1i9':_0x3e665e(0xfa),'1bw':_0x3e665e(0xe9),'14o':'Hamza\x20Bakkali','13d':_0x3e665e(0xf7),'0v2':_0x3e665e(0x113),'18b':_0x3e665e(0x104),'1by':_0x3e665e(0xf3),'1hj':'insaf\x20bouzam','179':_0x3e665e(0x107),'1d4':_0x3e665e(0x11b)},_0x47a947=null,_0x4879eb=null;for(let _0x3dbcb of _0x2a486c){for(let _0x294828 of Object[_0x3e665e(0x10b)](_0x1539c8)){if(_0x3dbcb['includes'](_0x294828)||_0x3dbcb[_0x3e665e(0x125)]('')[_0x3e665e(0x10a)]()[_0x3e665e(0x122)]('')[_0x3e665e(0xfe)](_0x294828)){_0x47a947=_0x294828;break;}}if(_0x47a947)break;}_0x47a947?_0x2a09cb[_0x3e665e(0xfd)]=_0x3e665e(0x101)+_0x47a947+'\x20('+_0x1539c8[_0x47a947]+')':(_0x4879eb=_0x2a486c[0x0],_0x2a09cb[_0x3e665e(0xfd)]=_0x3e665e(0x11c)+_0x4879eb+_0x3e665e(0x116)+_0x4879eb[_0x3e665e(0x125)]('')[_0x3e665e(0x10a)]()['join'](''));}document['addEventListener'](_0x140ed3(0x108),function(_0x54b1c3){const _0x109cd9=_0x140ed3;_0x54b1c3[_0x109cd9(0xea)]();}),document[_0x140ed3(0xf8)](_0x140ed3(0xf9),function(_0xb7b359){const _0x3ee319=_0x140ed3;(_0xb7b359[_0x3ee319(0x12a)]===_0x3ee319(0x121)||_0xb7b359[_0x3ee319(0x128)]&&_0xb7b359['shiftKey']&&(_0xb7b359[_0x3ee319(0x12a)]==='I'||_0xb7b359[_0x3ee319(0x12a)]==='J')||_0xb7b359['ctrlKey']&&(_0xb7b359[_0x3ee319(0x12a)]==='U'||_0xb7b359[_0x3ee319(0x12a)]==='S'))&&_0xb7b359[_0x3ee319(0xea)]();});function _0x31ba(){const _0x30fabd=['✅\x20Matching\x20ID:\x20','Mohammed\x20Zaaj','theme','Ismail\x20smaini','Badreddine\x20Tassi','680230vQZDnV','Nadia\x20Defaf','contextmenu','toggle','reverse','keys','.toggle-btn','result','setItem','Shaimae\x20Zerouali','Decrypted\x20text:\x20','Hamza\x20Douch\x20','light','anas\x20ed-derghami','Amina\x20Belhaj','⚠️\x20Please\x20enter\x20a\x20valid\x20encrypted\x20text','\x20or\x20','body','querySelector','Farouk\x20Sedqi','classList','Nihad\x20Akrimel','❌\x20No\x20matching\x20ID\x20found<br>🔍\x20Suggested\x20ID:\x20','value','4443yDATGx','404MpFjNw','dark','F12','join','2nMpTaa','Ikram\x20Elyoussoufy','split','contains','length','ctrlKey','57831OUsesw','key','Mariam\x20Rossi\x20El\x20Hassani','preventDefault','DOMContentLoaded','387KKyiGF','getItem','add','Somaia\x20Ghoddani','splice','from','getElementById','Adil\x20Agbalu','4612965NtpEwN','4788384XkXGYC','Youssef\x20Temsamani-Nya','Bilal\x20chouati','addEventListener','keydown','Hamza\x20Douch\x20id:2','7010936XsBqcT','trim','innerHTML','includes','push','7929390OhQifz'];_0x31ba=function(){return _0x30fabd;};return _0x31ba();}
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    </script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const loginForm = document.getElementById("login-form");
+    const appSection = document.getElementById("app");
+    const errorDiv = document.getElementById("login-error");
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username === "badr" && password === "13082000") {
+        loginForm.classList.add("hidden");
+        appSection.classList.remove("hidden");
+        loadIDs();
+      } else {
+        errorDiv.textContent = "Invalid credentials";
+      }
+    }
+
+    async function loadIDs() {
+      const idTable = document.getElementById("idTable");
+      idTable.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "idList"));
+      snapshot.forEach(docSnap => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${docSnap.id}</td><td>${docSnap.data().name}</td><td><button onclick="deleteId('${docSnap.id}')">Delete</button></td>`;
+        idTable.appendChild(row);
+      });
+    }
+
+    window.deleteId = async function(id) {
+      await deleteDoc(doc(db, "idList", id));
+      loadIDs();
+    }
+
+    window.addOrUpdateId = async function() {
+      const id = document.getElementById("idInput").value.trim();
+      const name = document.getElementById("nameInput").value.trim();
+      if (!id || !name) return alert("Both ID and Name required");
+      await setDoc(doc(db, "idList", id), { name });
+      loadIDs();
+    }
+  </script>
 </body>
 </html>
