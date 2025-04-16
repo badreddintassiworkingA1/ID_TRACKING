@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f4ff;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input {
+      border: 2px solid #e0e7ff;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+    }
+    .toggle-password {
+      cursor: pointer;
+      color: #1e3a8a;
+      display: block;
+      margin-top: -8px;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+    .error { color: red; text-align: center; }
+    .success { color: green; text-align: center; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="login-section">
+      <h2>Admin Login</h2>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <span class="toggle-password" id="togglePassword">Show Password</span>
+      <button onclick="login()">Login</button>
+      <div class="error" id="error"></div>
+    </div>
+
+    <div id="admin-section" class="hidden">
+      <h2>ID List Manager</h2>
+      <input type="text" id="newId" placeholder="Enter New ID">
+      <button onclick="addId()">Add ID</button>
+      <ul id="idList"></ul>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYKU2zhqAbm4n1LERKsUZk8lsqyx0MBWc",
+      authDomain: "id-tracking-8d65c.firebaseapp.com",
+      projectId: "id-tracking-8d65c",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginSection = document.getElementById('login-section');
+    const adminSection = document.getElementById('admin-section');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const errorDiv = document.getElementById('error');
+
+    document.getElementById('togglePassword').onclick = () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      document.getElementById('togglePassword').textContent = type === 'password' ? 'Show Password' : 'Hide Password';
+    };
+
+    function login() {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          loginSection.classList.add('hidden');
+          adminSection.classList.remove('hidden');
+          loadIdList();
+        })
+        .catch(err => {
+          errorDiv.textContent = err.message;
+        });
+    }
+
+    function addId() {
+      const newId = document.getElementById('newId').value.trim();
+      if (newId === '') return;
+
+      db.collection("idList").add({ id: newId })
+        .then(() => {
+          document.getElementById('newId').value = '';
+          loadIdList();
+        })
+        .catch(err => console.error("Error adding ID:", err));
+    }
+
+    function loadIdList() {
+      const idList = document.getElementById('idList');
+      idList.innerHTML = '';
+      db.collection("idList").get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            const li = document.createElement('li');
+            li.textContent = doc.data().id;
+            idList.appendChild(li);
+          });
+        });
+    }
+  </script>
+</body>
+</html>
