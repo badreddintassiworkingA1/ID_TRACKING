@@ -1,300 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <style>
-        :root {
-            --bg-color: #f0f4ff;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --primary: #1e3a8a;
-            --highlight: #f1f5ff;
-            --border-color: #e0e7ff;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --secondary-color: #4CAF50;
-            --danger-color: #FF5733;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - ID List</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
 
-        .navbar {
-            width: 100%;
-            background-color: var(--primary);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #333;
+    }
 
-        .navbar .title {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s ease;
+    }
 
-        .toggle-btn {
-            background: none;
-            border: 2px solid white;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s, transform 0.2s;
-        }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #007bff;
+      outline: none;
+    }
 
-        .toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
 
-        .input-wrapper {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 30px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 6px 15px var(--shadow-color);
-            margin-top: 100px;
-            text-align: center;
-        }
+    button:hover {
+      background-color: #0056b3;
+    }
 
-        .input-wrapper h2 {
-            font-size: 26px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 25px;
-        }
+    .logout-btn {
+      background: crimson;
+      margin-top: 20px;
+    }
 
-        input[type="text"], input[type="password"] {
-            width: 90%;
-            max-width: 450px;
-            padding: 14px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            background: var(--card-bg);
-            color: var(--text-color);
-            transition: border 0.3s ease;
-        }
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 20px;
+    }
 
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(30, 58, 138, 0.1);
-            outline: none;
-        }
+    li {
+      background: #f9f9f9;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.3s ease;
+    }
 
-        button {
-            background: var(--primary);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s ease;
-        }
+    li:hover {
+      background-color: #f1f1f1;
+    }
 
-        button:hover {
-            filter: brightness(1.1);
-            transform: scale(1.03);
-        }
+    .toggle-pass {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
 
-        .id-list {
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--highlight);
-            border-radius: 10px;
-            box-shadow: 0 6px 15px var(--shadow-color);
-            width: 100%;
-            max-width: 600px;
-            text-align: left;
-        }
+    .toggle-pass input {
+      flex: 1;
+      padding-right: 35px;
+    }
 
-        .id-list table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .toggle-pass span {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+      color: #007bff;
+      font-size: 18px;
+    }
 
-        .id-list th, .id-list td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .id-list th {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .id-list tr:hover {
-            background-color: var(--highlight);
-        }
-
-        .action-btn {
-            padding: 8px 16px;
-            background: var(--secondary-color);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .action-btn:hover {
-            background-color: #45a049;
-        }
-
-        .delete-btn {
-            background: var(--danger-color);
-        }
-
-        .delete-btn:hover {
-            background-color: #ff6f47;
-        }
-
-    </style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div class="title">🎯 ID Tracking</div>
-        <button class="toggle-btn" onclick="toggleTheme()">🌙</button>
+  <div class="container" id="loginSection">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Email" value="badr@admin.com" />
+    <div class="toggle-pass">
+      <input type="password" id="password" placeholder="Password" />
+      <span onclick="togglePassword()">👁️</span>
     </div>
+    <button id="loginBtn">Login</button>
+  </div>
 
-    <div id="loginSection" class="input-wrapper">
-        <h2>Login</h2>
-        <input type="text" id="email" placeholder="Enter email">
-        <input type="password" id="password" placeholder="Enter password">
-        <button onclick="login()">Login</button>
-    </div>
+  <div class="container hidden" id="adminSection">
+    <h2>ID List Manager</h2>
+    <input type="text" id="newId" placeholder="Enter ID" />
+    <input type="text" id="newName" placeholder="Enter Name" />
+    <button onclick="addId()">Add Entry</button>
+    <ul id="idList"></ul>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 
-    <div id="adminSection" style="display: none;" class="input-wrapper">
-        <h2>Admin Dashboard</h2>
-        <input type="text" id="newId" placeholder="Enter ID">
-        <input type="text" id="newName" placeholder="Enter Name">
-        <button onclick="addToDatabase()">Add ID</button>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-        <div class="id-list">
-            <h3>Current ID List</h3>
-            <table id="idTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID"
+    };
 
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const idListRef = collection(db, "idList");
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBYKU2zhqAbm4n1LERKsUZk8lsqyx0MBWc",
-            authDomain: "id-tracking-8d65c.firebaseapp.com",
-            projectId: "id-tracking-8d65c",
-            storageBucket: "id-tracking-8d65c.firebasestorage.app",
-            messagingSenderId: "753354270531",
-            appId: "1:753354270531:web:b6f25856362de7bcbf71f6",
-        };
+    const loginSection = document.getElementById("loginSection");
+    const adminSection = document.getElementById("adminSection");
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {})
+        .catch(() => alert("Login failed."));
+    });
 
-        // Toggle Theme (Dark/Light)
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-        }
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginSection.classList.add("hidden");
+        adminSection.classList.remove("hidden");
+        loadIds();
+      } else {
+        loginSection.classList.remove("hidden");
+        adminSection.classList.add("hidden");
+      }
+    });
 
-        // Login function
-        function login() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+    async function loadIds() {
+      const listElement = document.getElementById("idList");
+      listElement.innerHTML = "";
+      const snapshot = await getDocs(idListRef);
+      snapshot.forEach((docItem) => {
+        const data = docItem.data();
+        const li = document.createElement("li");
+        li.textContent = `ID: ${data.id} | Name: ${data.name}`;
+        const btn = document.createElement("button");
+        btn.textContent = "Delete";
+        btn.style.marginLeft = "10px";
+        btn.onclick = () => deleteId(docItem.id);
+        li.appendChild(btn);
+        listElement.appendChild(li);
+      });
+    }
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    document.getElementById("loginSection").style.display = "none";
-                    document.getElementById("adminSection").style.display = "block";
-                    loadIdList();
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
-                });
-        }
+    async function addId() {
+      const newId = document.getElementById("newId").value.trim();
+      const newName = document.getElementById("newName").value.trim();
+      if (!newId || !newName) return;
+      try {
+        await addDoc(idListRef, { id: newId, name: newName });
+        document.getElementById("newId").value = "";
+        document.getElementById("newName").value = "";
+        loadIds();
+      } catch {
+        alert("Failed to add entry.");
+      }
+    }
+    window.addId = addId;
 
-        // Load ID List from Firestore
-        function loadIdList() {
-            db.collection("idList").get().then((snapshot) => {
-                const tableBody = document.querySelector("#idTable tbody");
-                tableBody.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const idData = doc.data();
-                    tableBody.innerHTML += `
-                        <tr>
-                            <td>${idData.id}</td>
-                            <td>${idData.name}</td>
-                            <td><button class="action-btn delete-btn" onclick="deleteId('${doc.id}')">Delete</button></td>
-                        </tr>
-                    `;
-                });
-            });
-        }
+    async function deleteId(id) {
+      try {
+        await deleteDoc(doc(db, "idList", id));
+        loadIds();
+      } catch {
+        alert("Failed to delete.");
+      }
+    }
+    window.deleteId = deleteId;
 
-        // Add new ID to Firestore
-        function addToDatabase() {
-            const newId = document.getElementById("newId").value;
-            const newName = document.getElementById("newName").value;
+    function logout() {
+      signOut(auth);
+    }
+    window.logout = logout;
 
-            if (newId && newName) {
-                db.collection("idList").add({
-                    id: newId,
-                    name: newName
-                }).then(() => {
-                    loadIdList();
-                    document.getElementById("newId").value = '';
-                    document.getElementById("newName").value = '';
-                }).catch((error) => {
-                    alert("Error: " + error.message);
-                });
-            } else {
-                alert("Please enter both ID and Name");
-            }
-        }
-
-        // Delete ID from Firestore
-        function deleteId(id) {
-            db.collection("idList").doc(id).delete().then(() => {
-                loadIdList();
-            }).catch((error) => {
-                alert("Error: " + error.message);
-            });
-        }
-    </script>
-
+    window.togglePassword = function () {
+      const passwordInput = document.getElementById("password");
+      passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+    };
+  </script>
 </body>
 </html>
