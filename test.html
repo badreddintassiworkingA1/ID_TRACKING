@@ -203,9 +203,10 @@
       const snapshot = await database.ref("idList").once("value");
       const data = snapshot.val();
       if (!data) return false;
+
       for (const v of variants) {
-        if (data.includes(v)) {
-          return v;
+        if (Object.keys(data).includes(v)) {
+          return `${v} → ${data[v]}`;
         }
       }
       return false;
