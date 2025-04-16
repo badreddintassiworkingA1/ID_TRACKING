@@ -3,147 +3,205 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ID List Admin</title>
+  <title>Admin Panel - ID List</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 40px; }
-    .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-    input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-    .hidden { display: none; }
-    .id-item { display: flex; justify-content: space-between; margin-top: 5px; }
-    .id-item span { word-break: break-word; }
-    .actions button { margin-left: 5px; }
+    body {
+      font-family: sans-serif;
+      background: #f0f4f8;
+      padding: 40px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .logout-btn {
+      background: crimson;
+      margin-top: 20px;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      background: #f5f5f5;
+      padding: 8px 12px;
+      margin-bottom: 5px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .toggle-pass {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .toggle-pass input {
+      flex: 1;
+    }
+    .toggle-pass span {
+      margin-left: -30px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div id="login-section">
-    <h2>Login</h2>
+  <div class="container" id="loginSection">
+    <h2>Admin Login</h2>
     <input type="email" id="email" placeholder="Email" value="badr@admin.com" />
-    <div style="position:relative;">
+    <div class="toggle-pass">
       <input type="password" id="password" placeholder="Password" />
-      <button type="button" onclick="togglePassword()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); width:auto;">👁</button>
+      <span onclick="togglePassword()">👁️</span>
     </div>
-    <button onclick="login()">Login</button>
-    <p id="login-error" style="color:red;"></p>
+    <button id="loginBtn">Login</button>
   </div>
 
-  <div id="admin-section" class="hidden">
-    <h2>ID List Panel</h2>
-    <div>
-      <input type="text" id="newId" placeholder="Enter new ID" />
-      <button onclick="addId()">Add ID</button>
-    </div>
-    <div id="idList"></div>
-    <button onclick="logout()">Logout</button>
+  <div class="container hidden" id="adminSection">
+    <h2>ID List Manager</h2>
+    <input type="text" id="newId" placeholder="Enter new ID" />
+    <button onclick="addId()">Add ID</button>
+    <ul id="idList"></ul>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
-</div>
 
-<script type="module">
-  // Firebase SDK imports
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+  <script type="module">
+    // Firebase config
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-  // Firebase config (replace with your own project info)
-  const firebaseConfig = {
+    const firebaseConfig = {
       apiKey: "AIzaSyBYKU2zhqAbm4n1LERKsUZk8lsqyx0MBWc",
       authDomain: "id-tracking-8d65c.firebaseapp.com",
       projectId: "id-tracking-8d65c",
-  };
+    };
 
-  // Init Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const idListRef = collection(db, "idList");
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const idListRef = collection(db, "idList");
 
-  // Elements
-  const loginSection = document.getElementById("login-section");
-  const adminSection = document.getElementById("admin-section");
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const loginError = document.getElementById("login-error");
-  const idListDiv = document.getElementById("idList");
+    const loginSection = document.getElementById("loginSection");
+    const adminSection = document.getElementById("adminSection");
 
-  async function login() {
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      loginError.textContent = "";
-    } catch (error) {
-      loginError.textContent = "Invalid email or password.";
-    }
-  }
-
-  function logout() {
-    signOut(auth);
-  }
-
-  function togglePassword() {
-    const field = document.getElementById("password");
-    field.type = field.type === "password" ? "text" : "password";
-  }
-
-  async function addId() {
-    const newId = document.getElementById("newId").value.trim();
-    if (!newId) return;
-    try {
-      await addDoc(idListRef, { value: newId });
-      document.getElementById("newId").value = "";
-      loadIds();
-    } catch (error) {
-      alert("Failed to add ID.");
-    }
-  }
-
-  async function deleteId(id) {
-    try {
-      await deleteDoc(doc(db, "idList", id));
-      loadIds();
-    } catch (error) {
-      alert("Failed to delete.");
-    }
-  }
-
-  async function loadIds() {
-    idListDiv.innerHTML = "";
-    const snapshot = await getDocs(idListRef);
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const div = document.createElement("div");
-      div.className = "id-item";
-      div.innerHTML = `
-        <span>${data.value}</span>
-        <div class="actions">
-          <button onclick="deleteId('${docSnap.id}')">Delete</button>
-        </div>
-      `;
-      idListDiv.appendChild(div);
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {})
+        .catch(() => alert("Login failed."));
     });
-  }
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loginSection.classList.add("hidden");
-      adminSection.classList.remove("hidden");
-      loadIds();
-    } else {
-      loginSection.classList.remove("hidden");
-      adminSection.classList.add("hidden");
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginSection.classList.add("hidden");
+        adminSection.classList.remove("hidden");
+        loadIds();
+      } else {
+        loginSection.classList.remove("hidden");
+        adminSection.classList.add("hidden");
+      }
+    });
+
+    async function loadIds() {
+      const listElement = document.getElementById("idList");
+      listElement.innerHTML = "";
+      const snapshot = await getDocs(idListRef);
+      snapshot.forEach((docItem) => {
+        const li = document.createElement("li");
+        li.textContent = docItem.data().value;
+        const btn = document.createElement("button");
+        btn.textContent = "Delete";
+        btn.style.marginLeft = "10px";
+        btn.onclick = () => deleteId(docItem.id);
+        li.appendChild(btn);
+        listElement.appendChild(li);
+      });
     }
-  });
 
-  // Expose deleteId globally
-  window.deleteId = deleteId;
-</script>
+    async function addId() {
+      const newId = document.getElementById("newId").value.trim();
+      if (!newId) return;
+      try {
+        await addDoc(idListRef, { value: newId });
+        document.getElementById("newId").value = "";
+        loadIds();
+      } catch {
+        alert("Failed to add ID.");
+      }
+    }
+    window.addId = addId;
 
+    async function deleteId(id) {
+      try {
+        await deleteDoc(doc(db, "idList", id));
+        loadIds();
+      } catch {
+        alert("Failed to delete.");
+      }
+    }
+    window.deleteId = deleteId;
+
+    function logout() {
+      signOut(auth);
+    }
+    window.logout = logout;
+
+    window.togglePassword = function () {
+      const passwordInput = document.getElementById("password");
+      passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+    };
+  </script>
 </body>
 </html>
-
-
-
 
 
 
