@@ -93,14 +93,14 @@
 
   <div class="container hidden" id="adminSection">
     <h2>ID List Manager</h2>
-    <input type="text" id="newId" placeholder="Enter new ID" />
-    <button onclick="addId()">Add ID</button>
+    <input type="text" id="newId" placeholder="Enter ID" />
+    <input type="text" id="newName" placeholder="Enter Name" />
+    <button onclick="addId()">Add Entry</button>
     <ul id="idList"></ul>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
   <script type="module">
-    // Firebase config
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import {
       getAuth,
@@ -155,8 +155,9 @@
       listElement.innerHTML = "";
       const snapshot = await getDocs(idListRef);
       snapshot.forEach((docItem) => {
+        const data = docItem.data();
         const li = document.createElement("li");
-        li.textContent = docItem.data().value;
+        li.textContent = `ID: ${data.id} | Name: ${data.name}`;
         const btn = document.createElement("button");
         btn.textContent = "Delete";
         btn.style.marginLeft = "10px";
@@ -168,13 +169,15 @@
 
     async function addId() {
       const newId = document.getElementById("newId").value.trim();
-      if (!newId) return;
+      const newName = document.getElementById("newName").value.trim();
+      if (!newId || !newName) return;
       try {
-        await addDoc(idListRef, { value: newId });
+        await addDoc(idListRef, { id: newId, name: newName });
         document.getElementById("newId").value = "";
+        document.getElementById("newName").value = "";
         loadIds();
       } catch {
-        alert("Failed to add ID.");
+        alert("Failed to add entry.");
       }
     }
     window.addId = addId;
@@ -202,6 +205,7 @@
   </script>
 </body>
 </html>
+
 
 
 
