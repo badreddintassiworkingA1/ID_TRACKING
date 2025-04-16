@@ -6,6 +6,7 @@
   <title>ID TRACKING</title>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
   <style>
     :root {
       --bg-color: #f0f4ff;
@@ -125,7 +126,10 @@
     <div id="result"></div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBYKU2zhqAbm4n1LERKsUZk8lsqyx0MBWc",
       authDomain: "id-tracking-8d65c.firebaseapp.com",
@@ -136,41 +140,25 @@
       appId: "1:753354270531:web:b6f25856362de7bcbf71f6"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    let idListLocal = [];
+
+    async function loadIDList() {
+      const dbRef = ref(database);
+      const snapshot = await get(child(dbRef, "idList"));
+      const data = snapshot.val();
+      if (data) {
+        idListLocal = data;
+        console.log("ID List Loaded:", idListLocal.length, "entries");
+      } else {
+        console.warn("⚠️ No ID list found in Firebase.");
+      }
+    }
 
     function toggleTheme() {
       document.body.classList.toggle('dark');
-    }
-
-    function analyzeText() {
-      const input = document.getElementById("encryptedText").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
-      const decoded = decodeURIComponent(decodeURIComponent(input));
-
-      if (!decoded.includes("|")) {
-        resultDiv.innerHTML = '⚠️ Please enter a valid encrypted text';
-        return;
-      }
-
-      const parts = decoded.split("|");
-      if (parts.length < 2) {
-        resultDiv.innerHTML = '⚠️ Encrypted text must contain at least one ID';
-        return;
-      }
-
-      const subid = parts[1].trim();
-      const removeChars = ['l','r','a','u','g','p','m','s','c','d','i'];
-      const variants = generateVariants(subid, removeChars);
-
-      checkFirebaseIDs(variants).then(found => {
-        if (found) {
-          resultDiv.innerHTML = `✅ ID Match Found: <strong>${found}</strong>`;
-        } else {
-          resultDiv.innerHTML = '❌ No match found.';
-        }
-      });
     }
 
     function generateVariants(text, charsToRemove) {
@@ -199,18 +187,45 @@
       return Array.from(result);
     }
 
-    async function checkFirebaseIDs(variants) {
-      const snapshot = await database.ref("idList").once("value");
-      const data = snapshot.val();
-      if (!data) return false;
-
+    function checkLocalIDs(variants) {
       for (const v of variants) {
-        if (Object.keys(data).includes(v)) {
-          return `${v} → ${data[v]}`;
+        if (idListLocal.includes(v)) {
+          return v;
         }
       }
       return false;
     }
+
+    window.analyzeText = function () {
+      const input = document.getElementById("encryptedText").value.trim();
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "";
+      const decoded = decodeURIComponent(decodeURIComponent(input));
+
+      if (!decoded.includes("|")) {
+        resultDiv.innerHTML = '⚠️ Please enter a valid encrypted text';
+        return;
+      }
+
+      const parts = decoded.split("|");
+      if (parts.length < 2) {
+        resultDiv.innerHTML = '⚠️ Encrypted text must contain at least one ID';
+        return;
+      }
+
+      const subid = parts[1].trim();
+      const removeChars = ['l','r','a','u','g','p','m','s','c','d','i'];
+      const variants = generateVariants(subid, removeChars);
+
+      const found = checkLocalIDs(variants);
+      if (found) {
+        resultDiv.innerHTML = `✅ ID Match Found: <strong>${found}</strong>`;
+      } else {
+        resultDiv.innerHTML = '❌ No match found.';
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadIDList);
   </script>
 </body>
 </html>
