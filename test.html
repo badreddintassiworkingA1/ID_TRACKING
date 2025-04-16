@@ -1,227 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Spam Generator Tool</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .input-area, .output-area {
-            width: 100%;
-            margin: 20px 0;
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            font-size: 14px;
-            color: #333;
-            line-height: 1.5;
-            background-color: #f9f9f9;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .model-buttons {
-            margin-bottom: 20px;
-        }
-        .model-buttons label {
-            margin-right: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f4ff;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input {
+      border: 2px solid #e0e7ff;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+    }
+    .toggle-password {
+      cursor: pointer;
+      color: #1e3a8a;
+      display: block;
+      margin-top: -8px;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+    .error { color: red; text-align: center; }
+    .success { color: green; text-align: center; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>HTML Generator Tool</h1>
-        <p>Select the model you want to modify</p>
-
-        <!-- Radio Buttons to choose the model -->
-        <div class="model-buttons">
-            <label><input type="radio" name="model" value="model1" onclick="setModel('model1')"> Model 1</label>
-            <label><input type="radio" name="model" value="model2" onclick="setModel('model2')"> Model 2</label>
-            <label><input type="radio" name="model" value="model3" onclick="setModel('model3')"> Model 3</label>
-        </div>
-
-        <div class="input-area">
-            <textarea id="inputHTML" placeholder="Enter HTML here"></textarea>
-        </div>
-
-        <div>
-            <button onclick="generateSpamContent()">Generate</button>
-            <button onclick="copyOutput()">Copy</button>
-        </div>
-
-        <div class="output-area">
-            <h3>Modified HTML:</h3>
-            <textarea id="outputHTML" readonly></textarea>
-        </div>
+  <div class="container">
+    <div id="login-section">
+      <h2>Admin Login</h2>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <span class="toggle-password" id="togglePassword">Show Password</span>
+      <button onclick="login()">Login</button>
+      <div class="error" id="error"></div>
     </div>
 
-    <script>
-        let selectedModel = 'model1'; // default model
-
-        // Set the selected model based on the user's choice
-        function setModel(model) {
-            selectedModel = model;
-            document.getElementById("inputHTML").value = ''; // clear input text when model is changed
-            document.getElementById("outputHTML").value = ''; // clear output text when model is changed
-        }
-
-        // Generate spam content based on the selected model
-        function generateSpamContent() {
-            let inputHTML = document.getElementById("inputHTML").value;
-
-            let additionalContent = '';
-
-            if (selectedModel === 'model1') {
-                additionalContent = `
-                     <div class="hidden" style="display: none;">
-                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;__Random_com[10,10,lun];
-                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;__Random_com[10,10,lun];
-                    <!-- h34D-jUnk-StArT -->
-                    <span style="display:none;">✔️Yahoo considers this sender as a trusted source of communication._&#8203;d4rk&#8203;_SP4M __Random_com[10,10,lun]<!--XXX--></span>
-                    <span style="display:none;">⚡️z3ro_&#8203;d4rk&#8203;_SP4M<!--XXX--></span>
-                    <span style="display:none;">n0ise-&#8203;Bl0ck💥<!--🔥encoded--></span>
-                    <span style="display:none;">junk&#8203;_inject0r_☠️<!--hidden-->ENCODED</span>
-                    <!-- h34D-jUnk-END -->
-                </div>
-                 <div class="hidden" style="display: none;">
-    <h1>🔍 The Psychological Impact of Technology: A Growing Concern update : __smtpDate</h1>
-        <h1>📚__Link</h1>
-    <p>
-      The evolution of digital technologies has drastically transformed the way we communicate, consume information, and conduct daily activities. While these advancements have brought about significant conveniences, they have also introduced complex challenges to mental health and social behavior.
-    </p>
-    <p>
-      Studies by the <a href="https://www.apa.org/news/press/releases/stress/2023/technology-social-media-use" target="_blank">American Psychological Association</a> suggest a strong correlation between excessive technology use and increased levels of anxiety, depression, and sleep disorders. With smartphones becoming an inseparable part of modern life, users often report feelings of restlessness and dependency.
-    </p>
-    <p>
-      Social media platforms, although designed to connect people, have paradoxically contributed to greater social isolation. According to a 2022 study by the <a href="https://www.nimh.nih.gov/news/science-news/2022/social-media-use-and-mental-health-outcomes" target="_blank">National Institute of Mental Health (NIMH)</a>, prolonged exposure to curated digital personas and comparison-based content can lead to reduced self-esteem and distorted self-image.
-    </p>
-    <p>
-      On a neurological level, the constant barrage of notifications and information overload is reshaping the brain’s attention mechanisms. Researchers at <a href="https://hms.harvard.edu/news/how-smartphones-hijack-our-minds" target="_blank">Harvard Medical School</a> highlight how multitasking with devices reduces cognitive performance and hampers memory retention.
-    </p>
-    <p>
-      What’s more concerning is the impact on children and adolescents. The <a href="https://www.who.int/news-room/questions-and-answers/item/adolescent-mental-health" target="_blank">World Health Organization (WHO)</a> emphasizes the importance of monitoring screen time in young individuals, citing its connection with behavioral changes, poor academic performance, and increased emotional volatility.
-    </p>
-    <p>
-      Despite these risks, experts are not advocating for complete disconnection. Rather, they promote digital literacy, mindful use, and the cultivation of habits that prioritize well-being. Scheduling "tech-free" hours, engaging in real-life interactions, and practicing mindfulness can create healthier digital routines without rejecting technology’s benefits.
-    </p>
-    <p>
-      As we navigate this new digital age, it’s essential to stay informed and intentional. Understanding the psychological impact of our digital habits empowers individuals to take proactive steps towards balance, clarity, and mental resilience.
-    </p>
-
-    <p class="source">
-      Sources:<br/>
-      - APA: <a href="https://www.apa.org/news/press/releases/stress/2023/technology-social-media-use" target="_blank">https://www.apa.org/news/press/releases/stress/2023/technology-social-media-use</a><br/>
-      - NIMH: <a href="https://www.nimh.nih.gov/news/science-news/2022/social-media-use-and-mental-health-outcomes" target="_blank">https://www.nimh.nih.gov/news/science-news/2022/social-media-use-and-mental-health-outcomes</a><br/>
-      - Harvard Med: <a href="https://hms.harvard.edu/news/how-smartphones-hijack-our-minds" target="_blank">https://hms.harvard.edu/news/how-smartphones-hijack-our-minds</a><br/>
-      - WHO: <a href="https://www.who.int/news-room/questions-and-answers/item/adolescent-mental-health" target="_blank">https://www.who.int/news-room/questions-and-answers/item/adolescent-mental-health</a><br/>
-      -other: __To
-    </p>
+    <div id="admin-section" class="hidden">
+      <h2>ID List Manager</h2>
+      <input type="text" id="newId" placeholder="Enter New ID">
+      <button onclick="addId()">Add ID</button>
+      <ul id="idList"></ul>
+    </div>
   </div>
-                <div class="bg-junk" style="display: none;">
-                    <img src="https://i.ibb.co/f25vM7J/confuse.jpg" />
-                    <img src="https://via.placeholder.com/600x300.png?text=Hidden+Spam" />
-                    <img src="https://via.placeholder.com/600x300.png?text=Spam+Blocker" />
-                    <img src="https://i.ibb.co/6gFwqdd/hidden-image.png" />
-                    <img src="https://via.placeholder.com/600x300.png?text=Junk+Data" />
-                    <img src="https://via.placeholder.com/600x300.png?text=Spam+Prevention" />
-                </div>
-                <div class="hidden" style="display: none;">
-                    <!-- Base64 junk text encoding -->
-                    U3BhbW1pbmcgY29udGVudCBpcyBoZXJlIHRvIGZvb2wgdGhlIGZpbHRlcgo=__Random_com[10,10,lun]
-                    U2FtcGxlIGVuY29kaW5nIGluIGZpbGUgY29tcGxldGVkIGJ5IHRoZSBodHRwcyBpbmNyZWFzZWQgY29tcGxleCBpbnB1dC4=__Random_com[10,10,lun]
-                    Y29uY2VwdCB0aGlzIGZvb2wgY29tcGxleCB0ZXh0IHdpdGggYXBwbGljYXRpb24gd2hlbiB5b3UgZGVjb2RlIHRoaXMgZGV0YWlsLg==__Random_com[10,10,lun]
-                    <!-- More Junk -->
-                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;__Random_com[10,10,lun];
-                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;__Random_com[10,10,lun];
-                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;__Random_com[10,10,lun];
-                    &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;__Random_com[10,10,lun];
-                </div>
-                <div class="hidden" style="display: none;">
-                    <a href="https://google.com/redirect.html" target="_blank" style="color:#fff; display:none;">hidden link</a>
-                </div>
-                <div class="style-junk" style="font-family: 'Comic Sans MS', sans-serif; font-size: 20px; color: red; background-color: black; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); display: none;">
-                    Super Spammed Text
-                </div>
-                `;
-            } else if (selectedModel === 'model2') {
-                additionalContent = `
-                    <!-- Model 2: Element order 2 -->
-                    <div class="hidden" style="display: none;">
-                        &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                        <!-- Start of Junk -->
-                        <span style="display:none;">🔒Spam#Blocker_ABC</span>
-                        <span style="display:none;">&#65279;SpamIsBadText</span>
-                        <span style="display:none;">secret-content-YzD</span>
-                        <!-- End of Junk -->
-                    </div>
-                    <div class="bg-junk" style="display: none;">
-                        <img src="https://via.placeholder.com/600x300.png?text=Junk+Image+1" />
-                    </div>
-                    <div class="hidden" style="display: none;">
-                        &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                    </div>
-                    <!-- Main content starts here -->
-                `;
-            } else if (selectedModel === 'model3') {
-                additionalContent = `
-                    <!-- Model 3: Element order 3 -->
-                    <div class="hidden" style="display: none;">
-                        &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                        <!-- Start of Junk -->
-                        <span style="display:none;">⚡️RandomText_SpamStart</span>
-                        <span style="display:none;">&#65279;InvisibleJunk1234</span>
-                        <span style="display:none;">content_hidden--AqT</span>
-                        <!-- End of Junk -->
-                    </div>
-                    <div class="bg-junk" style="display: none;">
-                        <img src="https://i.ibb.co/ZHf4R7M/image2.png" />
-                    </div>
-                    <div class="hidden" style="display: none;">
-                        &#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;
-                    </div>
-                    <!-- Main content starts here -->
-                `;
-            }
 
-            let outputHTML = additionalContent + inputHTML + additionalContent;
-            document.getElementById("outputHTML").value = outputHTML;
-        }
+  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-firestore.js"></script>
 
-        function copyOutput() {
-            const output = document.getElementById("outputHTML");
-            output.select();
-            output.setSelectionRange(0, 99999); // For mobile devices
-            document.execCommand("copy");
-            alert("✔️ Modified HTML copied to clipboard!");
-        }
-    </script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+    };
 
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginSection = document.getElementById('login-section');
+    const adminSection = document.getElementById('admin-section');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const errorDiv = document.getElementById('error');
+
+    document.getElementById('togglePassword').onclick = () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      document.getElementById('togglePassword').textContent = type === 'password' ? 'Show Password' : 'Hide Password';
+    };
+
+    function login() {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          loginSection.classList.add('hidden');
+          adminSection.classList.remove('hidden');
+          loadIdList();
+        })
+        .catch(err => {
+          errorDiv.textContent = err.message;
+        });
+    }
+
+    function addId() {
+      const newId = document.getElementById('newId').value.trim();
+      if (newId === '') return;
+
+      db.collection("idList").add({ id: newId })
+        .then(() => {
+          document.getElementById('newId').value = '';
+          loadIdList();
+        })
+        .catch(err => console.error("Error adding ID:", err));
+    }
+
+    function loadIdList() {
+      const idList = document.getElementById('idList');
+      idList.innerHTML = '';
+      db.collection("idList").get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            const li = document.createElement('li');
+            li.textContent = doc.data().id;
+            idList.appendChild(li);
+          });
+        });
+    }
+  </script>
 </body>
 </html>
