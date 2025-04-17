@@ -305,11 +305,15 @@
 
             if (matchedId) {
                 resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
-            } else {
-  let suggestion1 = possibleVariants[0];
-  let suggestion2 = possibleVariants[1];
-  resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestion1} or ${suggestion2}`;
-}
+            } } else {
+  // اقتراح فقط ID يبدأ بـ 0 أو 1
+  let filtered = possibleVariants.filter(v => v.length === 3 && (v.startsWith("0") || v.startsWith("1")));
+  if (filtered.length > 0) {
+    resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: <strong>${filtered[0]}</strong>`;
+  } else {
+    resultDiv.innerHTML = "❌ No matching ID found";
+  }
+
 
         }
           document.addEventListener('contextmenu', function(e) {
