@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ID TRACKING</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID TRACKING</title>
  <style>
   :root {
     --bg-color: #f0f4ff;
@@ -152,156 +152,211 @@
   }
 </style>
 
+
 </head>
 <body>
-  <div class="navbar">
-    <div class="title">🎯 ID TRACKING</div>
-    <button class="toggle-btn" onclick="toggleTheme()">🌙</button>
-  </div>
+    <div class="navbar">
+<div class="title">🎯 ID TRACKING</div>
 
-  <div class="input-wrapper">
-    <input type="text" id="encryptedText" placeholder="Enter SUB1 (67e5e8a2c858e%7Cdsrgepla8cmu1i%7C41)">
-    <button onclick="analyzeText()">Analyze</button>
-    <div id="result"></div>
-  </div>
+<button class="toggle-btn" onclick="toggleTheme()">🌙</button>
+    </div>
 
-  <script>
+    <div class="input-wrapper">
+        <input type="text" id="encryptedText" placeholder="Enter SUB1 (67e5e8a2c858e%7Cdsrgepla8cmu1i%7C41)">
+        <button onclick="analyzeText()">Analyze</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+
+
+ const modeButton = document.querySelector(".toggle-btn");
+
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+
+    <!-- // حفظ الوضع في التخزين المحلي -->
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    // تغيير الأيقونة حسب الوضع
+    modeButton.innerHTML = isDark ? "🌞" : "🌙";
+  }
+
+  // عند تحميل الصفحة
+  window.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme");
+    const isDark = savedTheme === "dark";
+    
+    if (isDark) {
+      document.body.classList.add("dark");
+    }
+
+    // تعيين الأيقونة عند التحميل
     const modeButton = document.querySelector(".toggle-btn");
-
-    function toggleTheme() {
-      document.body.classList.toggle("dark");
-      const isDark = document.body.classList.contains("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
+    if (modeButton) {
       modeButton.innerHTML = isDark ? "🌞" : "🌙";
     }
+  });
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("theme");
-      const isDark = savedTheme === "dark";
-      if (isDark) document.body.classList.add("dark");
-      modeButton.innerHTML = isDark ? "🌞" : "🌙";
-    });
+        function generateVariants(text, ignoreChars) {
+            let variants = new Set();
 
-    function generateVariants(text, ignoreChars) {
-      let variants = new Set();
-      function removeOneCharPerIgnore(textArr, i = 0) {
-        if (i >= ignoreChars.length) {
-          variants.add(textArr.join(""));
-          return;
+            function removeOneCharPerIgnore(textArr, i = 0) {
+                if (i >= ignoreChars.length) {
+                    variants.add(textArr.join(""));
+                    return;
+                }
+
+                let char = ignoreChars[i];
+                let indexes = [];
+
+                textArr.forEach((c, idx) => {
+                    if (c === char) indexes.push(idx);
+                });
+
+                if (indexes.length === 0) {
+                    removeOneCharPerIgnore(textArr, i + 1);
+                } else {
+                    for (let idx of indexes) {
+                        let newArr = [...textArr];
+                        newArr.splice(idx, 1);
+                        removeOneCharPerIgnore(newArr, i + 1);
+                    }
+                }
+            }
+
+            removeOneCharPerIgnore([...text], 0);
+            return Array.from(variants);
         }
-        let char = ignoreChars[i];
-        let indexes = [];
-        textArr.forEach((c, idx) => {
-          if (c === char) indexes.push(idx);
-        });
-        if (indexes.length === 0) {
-          removeOneCharPerIgnore(textArr, i + 1);
-        } else {
-          for (let idx of indexes) {
-            let newArr = [...textArr];
-            newArr.splice(idx, 1);
-            removeOneCharPerIgnore(newArr, i + 1);
-          }
+
+        function analyzeText() {
+            let encryptedText = document.getElementById("encryptedText").value.trim();
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "";
+
+            encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
+            console.log("Decrypted text: ", encryptedText);
+
+            if (!encryptedText.includes("|")) {
+                resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
+                return;
+            }
+
+            let parts = encryptedText.split("|");
+            if (parts.length < 2) {
+                resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
+                return;
+            }
+
+            let encryptedPart = parts[1].trim(); 
+            let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
+
+            let possibleVariants = generateVariants(encryptedPart, ignoreChars);
+
+            let idList = {
+                "18e": "Badreddine Tassi",
+                "0re": "Youssef Temsamani-Nya",
+                "10y": "Abderrahman Jabili",
+                "187": "Zakariae Ben Zouynah",
+                "17a": "Badreddine Mzouri",
+                "19h": "Oumaima El Alami",
+                "1et": "Rayane Bensalah",
+                "18d": "Hamza Douch ",
+                "17j": "Farouk Sedqi",
+                "0zw": "Shaimae Zerouali",
+                "1d2": "Lamiaee Mai",
+                "1bl": "naoufal Rouas",
+                "0yq": "Asmae Cherkaoui",
+                "0yn": "Zahra Mghait",
+                "1f0": "Khadija El Heddari",
+                "0vo": "Somaia Ghoddani",
+                "1bx": "Mohammed Zaaj",
+                "0xh": "Abderrahime Lemmtouni Chouiakh",
+                "1dn": "Amina Belhaj",
+                "1ai": "Ikram Elyoussoufy",
+                "0z5": "Ayoub Azbakh",
+                "1i9": "Hamza Douch id:2",
+                "1bw": "Mariam Rossi El Hassani",
+                "14o": "Hamza Bakkali",
+                "13d": "Bilal chouati",
+                "0v2": "anas ed-derghami",
+                "18b": "Ismail smaini",
+                "1by": "Adil Agbalu",
+                "1hj": "insaf bouzam",
+				"0zy": "kaoutar fkih",
+				"0p4": "Mohamed Oulad Moussa",
+                "179": "Nadia Defaf",
+                "1d4": "Nihad Akrimel"
+            };
+
+            let matchedId = null;
+            let suggestedId = null;
+
+            for (let variant of possibleVariants) {
+                for (let id of Object.keys(idList)) {
+                    if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
+                        matchedId = id;
+                        break;
+                    }
+                }
+                if (matchedId) break;
+            }
+
+            if (matchedId) {
+                resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
+            } else {
+  let suggestion1 = possibleVariants[0];
+  let suggestion2 = possibleVariants[1];
+  resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestion1} or ${suggestion2}`;
+}
+
         }
-      }
-      removeOneCharPerIgnore([...text], 0);
-      return Array.from(variants);
+          document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  // تعطيل F12 و Ctrl+Shift+I و Ctrl+U و Ctrl+S
+  document.addEventListener('keydown', function(e) {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+      (e.ctrlKey && (e.key === "U" || e.key === "S"))
+    ) {
+      e.preventDefault();
     }
+  });
 
-    function analyzeText() {
-      let encryptedText = document.getElementById("encryptedText").value.trim();
-      let resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "";
-
-      encryptedText = decodeURIComponent(decodeURIComponent(encryptedText));
-
-      if (!encryptedText.includes("|")) {
-        resultDiv.innerHTML = "⚠️ Please enter a valid encrypted text";
-        return;
-      }
-
-      let parts = encryptedText.split("|");
-      if (parts.length < 2) {
-        resultDiv.innerHTML = "⚠️ Incomplete encrypted text";
-        return;
-      }
-
-      let encryptedPart = parts[1].trim();
-      let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
-      let possibleVariants = generateVariants(encryptedPart, ignoreChars);
-
-      let idList = {
-        "18e": "Badreddine Tassi",
-        "0re": "Youssef Temsamani-Nya",
-        "10y": "Abderrahman Jabili",
-        "187": "Zakariae Ben Zouynah",
-        "17a": "Badreddine Mzouri",
-        "19h": "Oumaima El Alami",
-        "1et": "Rayane Bensalah",
-        "18d": "Hamza Douch ",
-        "17j": "Farouk Sedqi",
-        "0zw": "Shaimae Zerouali",
-        "1d2": "Lamiaee Mai",
-        "1bl": "naoufal Rouas",
-        "0yq": "Asmae Cherkaoui",
-        "0yn": "Zahra Mghait",
-        "1f0": "Khadija El Heddari",
-        "0vo": "Somaia Ghoddani",
-        "1bx": "Mohammed Zaaj",
-        "0xh": "Abderrahime Lemmtouni Chouiakh",
-        "1dn": "Amina Belhaj",
-        "1ai": "Ikram Elyoussoufy",
-        "0z5": "Ayoub Azbakh",
-        "1i9": "Hamza Douch id:2",
-        "1bw": "Mariam Rossi El Hassani",
-        "14o": "Hamza Bakkali",
-        "13d": "Bilal chouati",
-        "0v2": "anas ed-derghami",
-        "18b": "Ismail smaini",
-        "1by": "Adil Agbalu",
-        "1hj": "insaf bouzam",
-        "0zy": "kaoutar fkih",
-        "0p4": "Mohamed Oulad Moussa",
-        "179": "Nadia Defaf",
-        "1d4": "Nihad Akrimel"
-      };
-
-      let matchedId = null;
-
-      for (let variant of possibleVariants) {
-        for (let id in idList) {
-          if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
-            matchedId = id;
-            break;
-          }
-        }
-        if (matchedId) break;
-      }
-
-      if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
-      } else {
-        // استخراج أول ID محتمل يبدأ بـ 0 أو 1 فقط
-        let suggestion = possibleVariants.find(v => v.length === 3 && (v.startsWith("0") || v.startsWith("1")));
-        if (suggestion) {
-          resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: <strong>${suggestion}</strong>`;
-        } else {
-          resultDiv.innerHTML = "❌ No matching ID found";
-        }
-      }
-    }
-
-    // منع النقر بالزر الأيمن وبعض الاختصارات
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('keydown', e => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
-        (e.ctrlKey && ["U", "S"].includes(e.key))
-      ) {
-        e.preventDefault();
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
