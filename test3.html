@@ -230,13 +230,7 @@
             return Array.from(variants);
         }
 
-   function analyzeText() {
-    // تأكد من أن idList قد تم تحميله
-    if (Object.keys(idList).length === 0) {
-        alert("ID list is still loading, please try again shortly.");
-        return;
-    }
-
+function analyzeText() {
     let encryptedText = document.getElementById("encryptedText").value.trim();
     let resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "";
@@ -255,31 +249,40 @@
         return;
     }
 
-    let encryptedPart = parts[1].trim();
+    let encryptedPart = parts[1].trim(); 
     let ignoreChars = ["l", "r", "a", "u", "g", "p", "m", "s", "c", "d", "i"];
 
     let possibleVariants = generateVariants(encryptedPart, ignoreChars);
 
-    let matchedId = null;
-    let suggestedId = null;
+    // تحميل idList من ملف JSON
+    fetch('https://badreddintassiworkinga1.github.io/ID_TRACKING/idList.json')
+        .then(response => response.json())
+        .then(idList => {
+            let matchedId = null;
+            let suggestedId = null;
 
-    for (let variant of possibleVariants) {
-        for (let id of Object.keys(idList)) {
-            if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
-                matchedId = id;
-                break;
+            for (let variant of possibleVariants) {
+                for (let id of Object.keys(idList)) {
+                    if (variant.includes(id) || variant.split("").reverse().join("").includes(id)) {
+                        matchedId = id;
+                        break;
+                    }
+                }
+                if (matchedId) break;
             }
-        }
-        if (matchedId) break;
-    }
 
-    if (matchedId) {
-        resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
-    } else {
-        // Suggest ID and also reverse the suggested ID
-        suggestedId = possibleVariants[0]; // Choose the first possible variant for the suggestion
-        resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId} or ${suggestedId.split("").reverse().join("")}`;
-    }
+            if (matchedId) {
+                resultDiv.innerHTML = `✅ Matching ID: ${matchedId} (${idList[matchedId]})`;
+            } else {
+                // Suggest ID and also reverse the suggested ID
+                suggestedId = possibleVariants[0]; // Choose the first possible variant for the suggestion
+                resultDiv.innerHTML = `❌ No matching ID found<br>🔍 Suggested ID: ${suggestedId} or ${suggestedId.split("").reverse().join("")}`;
+            }
+        })
+        .catch(error => {
+            resultDiv.innerHTML = "⚠️ Failed to load ID list. Please try again later.";
+            console.error("Error loading idList.json:", error);
+        });
 }
 
           document.addEventListener('contextmenu', function(e) {
