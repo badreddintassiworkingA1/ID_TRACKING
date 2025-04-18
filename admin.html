@@ -1,146 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ID List Admin</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f0f4ff;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 500px;
-    }
-    h2 {
-      text-align: center;
-      color: #1e3a8a;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    input {
-      border: 2px solid #e0e7ff;
-    }
-    button {
-      background-color: #1e3a8a;
-      color: #ffffff;
-      border: none;
-      cursor: pointer;
-    }
-    .toggle-password {
-      cursor: pointer;
-      color: #1e3a8a;
-      display: block;
-      margin-top: -8px;
-      margin-bottom: 10px;
-      text-align: right;
-    }
-    .error { color: red; text-align: center; }
-    .success { color: green; text-align: center; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    #loginForm, #adminPanel { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    input, button, textarea { width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #1e3a8a; color: white; border: none; cursor: pointer; }
     .hidden { display: none; }
+    #entryList div { margin: 5px 0; background: #eef; padding: 5px; border-radius: 5px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="login-section">
-      <h2>Admin Login</h2>
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
-      <span class="toggle-password" id="togglePassword">Show Password</span>
-      <button onclick="login()">Login</button>
-      <div class="error" id="error"></div>
-    </div>
-
-    <div id="admin-section" class="hidden">
-      <h2>ID List Manager</h2>
-      <input type="text" id="newId" placeholder="Enter New ID">
-      <button onclick="addId()">Add ID</button>
-      <ul id="idList"></ul>
-    </div>
+  <div id="loginForm">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="login()">Login</button>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-firestore.js"></script>
+  <div id="adminPanel" class="hidden">
+    <h2>Edit ID List</h2>
+    <input type="text" id="githubToken" placeholder="Enter GitHub Token" />
+    <input type="text" id="repo" placeholder="GitHub Repo (e.g., username/repo)" />
+    <input type="text" id="path" placeholder="File path (e.g., idList.json)" />
+    <div id="entryList"></div>
+
+    <input type="text" id="newId" placeholder="ID" />
+    <input type="text" id="description" placeholder="Description" />
+    <button onclick="addOrUpdateEntry()">Add/Update</button>
+
+    <input type="text" id="deleteId" placeholder="ID to delete" />
+    <button onclick="deleteEntry()">Delete</button>
+
+    <button onclick="saveChanges()">Save Changes</button>
+  </div>
 
   <script>
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
+      apiKey: "AIzaSyBYKU2zhqAbm4n1LERKsUZk8lsqyx0MBWc",
+      authDomain: "id-tracking-8d65c.firebaseapp.com",
+      projectId: "id-tracking-8d65c",
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    const loginSection = document.getElementById('login-section');
-    const adminSection = document.getElementById('admin-section');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const errorDiv = document.getElementById('error');
-
-    document.getElementById('togglePassword').onclick = () => {
-      const type = passwordInput.type === 'password' ? 'text' : 'password';
-      passwordInput.type = type;
-      document.getElementById('togglePassword').textContent = type === 'password' ? 'Show Password' : 'Hide Password';
-    };
+    let idList = {};
+    let sha = "";
 
     function login() {
-      const email = emailInput.value;
-      const password = passwordInput.value;
-
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
       auth.signInWithEmailAndPassword(email, password)
         .then(() => {
-          loginSection.classList.add('hidden');
-          adminSection.classList.remove('hidden');
-          loadIdList();
+          document.getElementById("loginForm").classList.add("hidden");
+          document.getElementById("adminPanel").classList.remove("hidden");
         })
-        .catch(err => {
-          errorDiv.textContent = err.message;
-        });
+        .catch(err => alert("Login Failed: " + err.message));
     }
 
-    function addId() {
-      const newId = document.getElementById('newId').value.trim();
-      if (newId === '') return;
-
-      db.collection("idList").add({ id: newId })
-        .then(() => {
-          document.getElementById('newId').value = '';
-          loadIdList();
-        })
-        .catch(err => console.error("Error adding ID:", err));
+    async function fetchList() {
+      const token = document.getElementById("githubToken").value;
+      const repo = document.getElementById("repo").value;
+      const path = document.getElementById("path").value;
+      const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `token ${token}` },
+      });
+      const data = await res.json();
+      sha = data.sha;
+      idList = JSON.parse(atob(data.content));
+      displayEntries();
     }
 
-    function loadIdList() {
-      const idList = document.getElementById('idList');
-      idList.innerHTML = '';
-      db.collection("idList").get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            const li = document.createElement('li');
-            li.textContent = doc.data().id;
-            idList.appendChild(li);
-          });
-        });
+    function displayEntries() {
+      const listDiv = document.getElementById("entryList");
+      listDiv.innerHTML = "";
+      for (let key in idList) {
+        const entry = document.createElement("div");
+        entry.textContent = `${key}: ${idList[key]}`;
+        listDiv.appendChild(entry);
+      }
     }
+
+    function addOrUpdateEntry() {
+      const key = document.getElementById("newId").value.trim();
+      const value = document.getElementById("description").value.trim();
+      if (key && value) {
+        idList[key] = value;
+        displayEntries();
+      }
+    }
+
+    function deleteEntry() {
+      const key = document.getElementById("deleteId").value.trim();
+      if (key && idList[key]) {
+        delete idList[key];
+        displayEntries();
+      }
+    }
+
+    async function saveChanges() {
+      const token = document.getElementById("githubToken").value;
+      const repo = document.getElementById("repo").value;
+      const path = document.getElementById("path").value;
+      const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+      const content = btoa(JSON.stringify(idList, null, 2));
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+        body: JSON.stringify({
+          message: "Update idList.json",
+          content: content,
+          sha: sha,
+        }),
+      });
+
+      if (res.ok) alert("Saved successfully!");
+      else alert("Failed to save.");
+    }
+
+    // Optional: Fetch list when user fills repo info
+    document.getElementById("path").addEventListener("change", fetchList);
   </script>
 </body>
 </html>
