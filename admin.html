@@ -1,135 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ID List Admin</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    #loginForm, #adminPanel { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
-    input, button, textarea { width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #1e3a8a; color: white; border: none; cursor: pointer; }
-    .hidden { display: none; }
-    #entryList div { margin: 5px 0; background: #eef; padding: 5px; border-radius: 5px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - ID Tracking</title>
+    <style>
+      /* إضافة نفس الأنماط التي سبق ذكرها */
+    </style>
 </head>
 <body>
-  <div id="loginForm">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button onclick="login()">Login</button>
-  </div>
+    <div class="navbar">
+        <div class="title">🎯 Admin - ID Tracking</div>
+    </div>
 
-  <div id="adminPanel" class="hidden">
-    <h2>Edit ID List</h2>
-    <input type="text" id="githubToken" placeholder="Enter GitHub Token" />
-    <input type="text" id="repo" placeholder="GitHub Repo (e.g., username/repo)" />
-    <input type="text" id="path" placeholder="File path (e.g., idList.json)" />
-    <div id="entryList"></div>
+    <!-- قسم تسجيل الدخول -->
+    <div id="login-section">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Enter email">
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+    </div>
 
-    <input type="text" id="newId" placeholder="ID" />
-    <input type="text" id="description" placeholder="Description" />
-    <button onclick="addOrUpdateEntry()">Add/Update</button>
+    <!-- قسم إدارة ID List بعد تسجيل الدخول -->
+    <div id="admin-section" style="display: none;">
+        <h2>Manage ID List</h2>
+        <button onclick="addItem()">Add New Item</button>
+        <button onclick="editItem()">Edit Item</button>
+        <button onclick="deleteItem()">Delete Item</button>
+        <div id="result"></div>
+    </div>
 
-    <input type="text" id="deleteId" placeholder="ID to delete" />
-    <button onclick="deleteEntry()">Delete</button>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <button onclick="saveChanges()">Save Changes</button>
-  </div>
-
-  <script>
-    const firebaseConfig = {
+    <script>
+        // تكوين Firebase
+        const firebaseConfig = {
       apiKey: "AIzaSyBYKU2zhqAbm4n1LERKsUZk8lsqyx0MBWc",
       authDomain: "id-tracking-8d65c.firebaseapp.com",
       projectId: "id-tracking-8d65c",
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-    let idList = {};
-    let sha = "";
+        // إعدادات GitHub API
+        const gitHubToken = "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";
+        const gitHubRepo = "badreddintassiworkingA1/ID_TRACKING"; // استبدل بالريبو الخاص بك
+        const filePath = "idList.json"; // استبدل بالمسار الصحيح للملف في الريبو
 
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          document.getElementById("loginForm").classList.add("hidden");
-          document.getElementById("adminPanel").classList.remove("hidden");
-        })
-        .catch(err => alert("Login Failed: " + err.message));
-    }
+        // تسجيل الدخول عبر Firebase
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
-    async function fetchList() {
-      const token = document.getElementById("githubToken").value;
-      const repo = document.getElementById("repo").value;
-      const path = document.getElementById("path").value;
-      const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-      const res = await fetch(url, {
-        headers: { Authorization: `token ${token}` },
-      });
-      const data = await res.json();
-      sha = data.sha;
-      idList = JSON.parse(atob(data.content));
-      displayEntries();
-    }
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // تسجيل الدخول ناجح
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
+                })
+                .catch((error) => {
+                    alert('Login failed: ' + error.message);
+                });
+        }
 
-    function displayEntries() {
-      const listDiv = document.getElementById("entryList");
-      listDiv.innerHTML = "";
-      for (let key in idList) {
-        const entry = document.createElement("div");
-        entry.textContent = `${key}: ${idList[key]}`;
-        listDiv.appendChild(entry);
-      }
-    }
+        // إضافة عنصر جديد
+        function addItem() {
+            // هنا يمكنك إضافة البيانات التي تريد إدخالها
+            const newItem = { "newID": "New value" };  // بيانات جديدة للإضافة
+            updateGitHubFile(newItem, "add");
+        }
 
-    function addOrUpdateEntry() {
-      const key = document.getElementById("newId").value.trim();
-      const value = document.getElementById("description").value.trim();
-      if (key && value) {
-        idList[key] = value;
-        displayEntries();
-      }
-    }
+        // تعديل عنصر
+        function editItem() {
+            // تعديل البيانات حسب الحاجة
+            const updatedItem = { "existingID": "Updated value" };  // البيانات المعدلة
+            updateGitHubFile(updatedItem, "edit");
+        }
 
-    function deleteEntry() {
-      const key = document.getElementById("deleteId").value.trim();
-      if (key && idList[key]) {
-        delete idList[key];
-        displayEntries();
-      }
-    }
+        // حذف عنصر
+        function deleteItem() {
+            // حذف العنصر المطلوب
+            const itemToDelete = "existingID";  // المعرف المراد حذفه
+            updateGitHubFile({ "idToDelete": itemToDelete }, "delete");
+        }
 
-    async function saveChanges() {
-      const token = document.getElementById("githubToken").value;
-      const repo = document.getElementById("repo").value;
-      const path = document.getElementById("path").value;
-      const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+        // تحديث الملف على GitHub باستخدام API
+        function updateGitHubFile(data, action) {
+            const url = `https://api.github.com/repos/${gitHubRepo}/contents/${filePath}`;
+            const headers = {
+                Authorization: `token ${gitHubToken}`,
+                "Content-Type": "application/json",
+            };
 
-      const content = btoa(JSON.stringify(idList, null, 2));
-      const res = await fetch(url, {
-        method: "PUT",
-        headers: {
-          Authorization: `token ${token}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-        body: JSON.stringify({
-          message: "Update idList.json",
-          content: content,
-          sha: sha,
-        }),
-      });
+            // قم بتحميل الملف الحالي من GitHub أولاً
+            axios.get(url, { headers })
+                .then((response) => {
+                    const sha = response.data.sha;  // SHA للملف الحالي
 
-      if (res.ok) alert("Saved successfully!");
-      else alert("Failed to save.");
-    }
+                    // تحديث الملف بناءً على نوع العملية (إضافة/تعديل/حذف)
+                    let newContent = response.data.content;
+                    if (action === "add") {
+                        newContent = addNewItem(newContent, data);
+                    } else if (action === "edit") {
+                        newContent = editItemInFile(newContent, data);
+                    } else if (action === "delete") {
+                        newContent = deleteItemFromFile(newContent, data);
+                    }
 
-    // Optional: Fetch list when user fills repo info
-    document.getElementById("path").addEventListener("change", fetchList);
-  </script>
+                    // إرسال البيانات المحدثة إلى GitHub
+                    axios.put(url, {
+                        message: `Update ${filePath} via admin`,
+                        content: newContent,
+                        sha: sha,
+                    }, { headers })
+                    .then(() => {
+                        alert('File updated successfully!');
+                    })
+                    .catch((error) => {
+                        alert('Error updating file: ' + error.message);
+                    });
+                })
+                .catch((error) => {
+                    alert('Error fetching file: ' + error.message);
+                });
+        }
+
+        // دوال مساعدة لتحديث المحتوى
+        function addNewItem(content, data) {
+            // إضافة العناصر الجديدة إلى المحتوى
+            // يجب أن تفك تشفير المحتوى من Base64
+            const decodedContent = atob(content);
+            const parsedContent = JSON.parse(decodedContent);
+            parsedContent.push(data);
+            return btoa(JSON.stringify(parsedContent));
+        }
+
+        function editItemInFile(content, data) {
+            // تعديل العنصر في المحتوى
+            const decodedContent = atob(content);
+            const parsedContent = JSON.parse(decodedContent);
+            for (let item of parsedContent) {
+                if (item.id === data.existingID) {
+                    item.value = data.updatedValue;  // تحديث القيمة
+                    break;
+                }
+            }
+            return btoa(JSON.stringify(parsedContent));
+        }
+
+        function deleteItemFromFile(content, data) {
+            // حذف العنصر من المحتوى
+            const decodedContent = atob(content);
+            const parsedContent = JSON.parse(decodedContent);
+            const index = parsedContent.findIndex(item => item.id === data.idToDelete);
+            if (index !== -1) {
+                parsedContent.splice(index, 1);
+            }
+            return btoa(JSON.stringify(parsedContent));
+        }
+
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
