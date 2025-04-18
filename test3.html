@@ -4,161 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID TRACKING</title>
- <style>
-  :root {
-    --bg-color: #f0f4ff;
-    --card-bg: #ffffff;
-    --text-color: #333;
-    --primary: #1e3a8a;
-    --highlight: #f1f5ff;
-    --border-color: #e0e7ff;
-    --shadow-color: rgba(0, 0, 0, 0.08);
-  }
+    <style>
+        :root {
+            --bg-color: #f0f4ff;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --primary: #1e3a8a;
+            --highlight: #f1f5ff;
+            --border-color: #e0e7ff;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
 
-  body.dark {
-    --bg-color: #111827;
-    --card-bg: #1f2937;
-    --text-color: #f3f4f6;
-    --primary: #60a5fa;
-    --highlight: #1f2937;
-    --border-color: #374151;
-    --shadow-color: rgba(255, 255, 255, 0.05);
-  }
+        body.dark {
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --text-color: #f3f4f6;
+            --primary: #60a5fa;
+            --highlight: #1f2937;
+            --border-color: #374151;
+            --shadow-color: rgba(255, 255, 255, 0.05);
+        }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 100px;
-    transition: background 0.3s ease, color 0.3s ease;
-    min-height: 100vh;
-  }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+            transition: background 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
 
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 65px;
-    background-color: var(--primary);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-size: 20px;
-    font-weight: 600;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 20px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
 
-  .navbar .title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
+        .navbar .title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
 
-  .toggle-btn {
-    background: none;
-    border: 2px solid white;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s, transform 0.2s;
-  }
+        .toggle-btn {
+            background: none;
+            border: 2px solid white;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s, transform 0.2s;
+        }
 
-  .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(1.05);
-  }
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
 
-  h2 {
-    color: var(--primary);
-    font-size: 26px;
-    margin-bottom: 25px;
-    font-weight: 600;
-  }
+        h2 {
+            color: var(--primary);
+            font-size: 26px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
 
-  input[type="text"] {
-    width: 90%;
-    max-width: 450px;
-    padding: 14px 16px;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    font-size: 16px;
-    margin-bottom: 25px;
-    background: var(--card-bg);
-    color: var(--text-color);
-    transition: border 0.3s ease;
-  }
+        input[type="text"] {
+            width: 90%;
+            max-width: 450px;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 25px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            transition: border 0.3s ease;
+        }
 
-  input[type="text"]:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 8px rgba(30, 58, 138, 0.1);
-    outline: none;
-  }
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(30, 58, 138, 0.1);
+            outline: none;
+        }
 
-  button {
-    background: var(--primary);
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s ease;
-  }
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s ease;
+        }
 
-  button:hover {
-    filter: brightness(1.1);
-    transform: scale(1.03);
-  }
+        button:hover {
+            filter: brightness(1.1);
+            transform: scale(1.03);
+        }
 
-  #result {
-    margin-top: 30px;
-    font-size: 17px;
-    background-color: var(--highlight);
-    padding: 20px 24px;
-    border-left: 6px solid var(--primary);
-    border-radius: 12px;
-    box-shadow: 0 6px 15px var(--shadow-color);
-    word-wrap: break-word;
-    line-height: 1.7;
-    text-align: left;
-    transition: all 0.3s ease;
-    max-width: 90%;
-    width: 500px;
-  }
+        #result {
+            margin-top: 30px;
+            font-size: 17px;
+            background-color: var(--highlight);
+            padding: 20px 24px;
+            border-left: 6px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px var(--shadow-color);
+            word-wrap: break-word;
+            line-height: 1.7;
+            text-align: left;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            width: 500px;
+        }
 
-  #result strong {
-    color: var(--primary);
-    background: rgba(30, 58, 138, 0.08);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 16px;
-  }
-</style>
-
-
+        #result strong {
+            color: var(--primary);
+            background: rgba(30, 58, 138, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar">
-<div class="title">🎯 ID TRACKING</div>
-
-<button class="toggle-btn" onclick="toggleTheme()">🌙</button>
+        <div class="title">🎯 ID TRACKING</div>
+        <button class="toggle-btn" onclick="toggleTheme()">🌙</button>
     </div>
 
     <div class="input-wrapper">
